@@ -1,6 +1,7 @@
 import 'package:captura_lens/services/user_controller.dart';
 import 'package:captura_lens/splash_screen.dart';
 import 'package:captura_lens/user/user_categories.dart';
+import 'package:captura_lens/utils/const.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -46,52 +47,55 @@ class _UserHomeDetailsState extends State<UserHomeDetails> {
                     ),
                   ),
                   const SizedBox(width: 8.0),
-                  IconButton(
-                    icon: const Icon(
-                      Icons.power_settings_new_rounded,
-                      color: Color.fromARGB(255, 229, 43, 30),
-                    ),
-                    onPressed: () {
-                      FirebaseAuth.instance.signOut().then((value) {
-                        Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(
-                                builder: (context) => const SplashScreen()),
-                            (route) => false);
-                      });
-                    },
-                  ),
+                  // IconButton(
+                  //   icon: const Icon(
+                  //     Icons.power_settings_new_rounded,
+                  //     color: Color.fromARGB(255, 229, 43, 30),
+                  //   ),
+                  //   onPressed: () {
+                  //     FirebaseAuth.instance.signOut().then((value) {
+                  //       Navigator.of(context).pushAndRemoveUntil(
+                  //           MaterialPageRoute(
+                  //               builder: (context) => const SplashScreen()),
+                  //           (route) => false);
+                  //     });
+                  //   },
+                  // ),
                 ],
               ),
             ),
-            Container(
-              height: 100,
-              child: ListView.builder(
+            const SizedBox(
+              height: 10,
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * .2,
+              child: ListView.separated(
+                  separatorBuilder: (context, index) => const SizedBox(
+                        width: 20,
+                      ),
                   scrollDirection: Axis.horizontal,
-                  itemCount: 10,
+                  itemCount: photographyTypes.length,
                   itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: InkWell(
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const UserCategories()));
-                          },
-                          child: Container(
-                            width: 100,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: Colors.grey,
-                            ),
-                            child: const Center(
-                                child: Text(
-                              "Category",
-                              style: TextStyle(color: Colors.white),
-                            )),
-                          ),
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => UserCategories(
+                                      type: photographyTypes[index],
+                                    )));
+                      },
+                      child: Container(
+                        padding: EdgeInsets.only(bottom: 20),
+                        alignment: Alignment.bottomCenter,
+                        width: MediaQuery.of(context).size.width * .6,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          color: Colors.grey,
+                        ),
+                        child: Text(
+                          photographyTypes[index],
+                          style: const TextStyle(color: Colors.white),
                         ),
                       ),
                     );
@@ -112,17 +116,15 @@ class _UserHomeDetailsState extends State<UserHomeDetails> {
                           );
                         }
                         final postList = controller.allPost;
+                        postList.shuffle();
                         return Expanded(
                           child: ListView.builder(
                             itemCount: postList.length,
                             itemBuilder: (context, index) {
                               return Padding(
                                 padding: const EdgeInsets.all(2.0),
-                                child: Container(
+                                child: SizedBox(
                                   height: 300,
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      border: Border.all(color: Colors.grey)),
                                   child: Column(
                                     children: [
                                       FutureBuilder(
@@ -162,8 +164,9 @@ class _UserHomeDetailsState extends State<UserHomeDetails> {
                                                 Text(
                                                   snapshot.data!.email,
                                                   style: const TextStyle(
+                                                      color: Colors.white,
                                                       fontWeight:
-                                                          FontWeight.bold),
+                                                          FontWeight.w400),
                                                 ),
                                               ],
                                             );
@@ -171,14 +174,11 @@ class _UserHomeDetailsState extends State<UserHomeDetails> {
                                       Expanded(
                                         child: Container(
                                           decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                  fit: BoxFit.fill,
-                                                  image: NetworkImage(
-                                                      postList[index]
-                                                          .imageUrl)),
-                                              color: Colors.blueGrey,
-                                              border: Border.all(
-                                                  color: Colors.white)),
+                                            image: DecorationImage(
+                                                fit: BoxFit.fill,
+                                                image: NetworkImage(
+                                                    postList[index].imageUrl)),
+                                          ),
                                         ),
                                       ),
                                       Row(
@@ -186,16 +186,22 @@ class _UserHomeDetailsState extends State<UserHomeDetails> {
                                           IconButton(
                                               onPressed: () {},
                                               icon: const Icon(
-                                                  CupertinoIcons.heart_fill)),
+                                                CupertinoIcons.heart_fill,
+                                                color: Colors.white,
+                                              )),
                                           IconButton(
                                               onPressed: () {},
                                               icon: const Icon(
-                                                  CupertinoIcons.chat_bubble)),
+                                                CupertinoIcons.chat_bubble,
+                                                color: Colors.white,
+                                              )),
                                           const Spacer(),
                                           IconButton(
                                               onPressed: () {},
                                               icon: const Icon(
-                                                  CupertinoIcons.bookmark))
+                                                CupertinoIcons.bookmark,
+                                                color: Colors.white,
+                                              ))
                                         ],
                                       ),
                                     ],

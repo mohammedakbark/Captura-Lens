@@ -5,6 +5,7 @@ import 'package:captura_lens/photographer/photo_home.dart';
 import 'package:captura_lens/photographer/photo_send_otp.dart';
 import 'package:captura_lens/services/database.dart';
 import 'package:captura_lens/services/photographer_controller.dart';
+import 'package:captura_lens/utils/const.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -28,13 +29,15 @@ class _PhotoLoginSignUpState extends State<PhotoLoginSignUp> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
   final TextEditingController _placeController = TextEditingController();
-  final TextEditingController _typeController = TextEditingController();
   final TextEditingController _aadhaarController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
 
+  String selecteType = "";
   bool _isLogin = true;
   bool _isChecked = false;
   bool _isObscured = true;
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -262,19 +265,35 @@ class _PhotoLoginSignUpState extends State<PhotoLoginSignUp> {
                       ),
                     const SizedBox(height: 20.0),
                     if (!_isLogin)
-                      TextFormField(
-                        decoration: const InputDecoration(
-                            hintText: 'Type of Photography',
-                            prefixIcon: Icon(
-                              Icons.view_list,
-                              color: CustomColors.buttonGreen,
-                            ),
-                            border: OutlineInputBorder()),
-                        controller: _typeController,
-                        validator: (type) {
-                          return type!.isEmpty ? "Enter Type to begin" : null;
-                        },
-                      ),
+                      DropdownButtonFormField(
+                          decoration: const InputDecoration(
+                              hintText: 'Type of Photography',
+                              prefixIcon: Icon(
+                                Icons.view_list,
+                                color: CustomColors.buttonGreen,
+                              ),
+                              border: OutlineInputBorder()),
+                          items: photographyTypes.map((e) {
+                            return DropdownMenuItem(value: e, child: Text(e));
+                          }).toList(),
+                          onChanged: (selectedValue) {
+                            selecteType = selectedValue!;
+                            // setState(() {});
+                          }),
+
+                    // TextFormField(
+                    // decoration: const InputDecoration(
+                    //     hintText: 'Type of Photography',
+                    //     prefixIcon: Icon(
+                    //       Icons.view_list,
+                    //       color: CustomColors.buttonGreen,
+                    //     ),
+                    //     border: OutlineInputBorder()),
+                    //   controller: _typeController,
+                    //   validator: (type) {
+                    //     return type!.isEmpty ? "Enter Type to begin" : null;
+                    //   },
+                    // ),
                     const SizedBox(height: 20.0),
                     if (!_isLogin)
                       TextFormField(
@@ -402,36 +421,46 @@ class _PhotoLoginSignUpState extends State<PhotoLoginSignUp> {
                                         SnackBar(
                                             content: Text(error.toString())));
                                   })
-                                : FirebaseAuth.instance
-                                    .createUserWithEmailAndPassword(
-                                        email: _emailController.text,
-                                        password: _passwordController.text)
-                                    .then((value) async {
-
-                                    await PhotographerController().addPhotoDetails(
-                                        NewPhotographer(
-                                            profileUrl: "",
-                                            adherNumber: int.parse(
-                                                _aadhaarController.text),
+                                : selecteType.isNotEmpty
+                                    ? FirebaseAuth.instance
+                                        .createUserWithEmailAndPassword(
                                             email: _emailController.text,
-                                            id: value.user!.uid,
-                                            password: _passwordController.text,
-                                            phoneNumber: int.parse(
-                                                _phoneController.text),
-                                            place: _placeController.text,
-                                            typePhotographer:
-                                                _typeController.text),
-                                        value.user!.uid);
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const PhotoHome()));
-                                  }).onError((error, stackTrace) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                            content: Text(error.toString())));
-                                  });
+                                            password: _passwordController.text)
+                                        .then((value) async {
+                                        await PhotographerController()
+                                            .addPhotoDetails(
+                                                NewPhotographer(
+                                                    profileUrl: "",
+                                                    adherNumber: int.parse(
+                                                        _aadhaarController
+                                                            .text),
+                                                    email:
+                                                        _emailController.text,
+                                                    id: value.user!.uid,
+                                                    password:
+                                                        _passwordController
+                                                            .text,
+                                                    phoneNumber: int.parse(
+                                                        _phoneController.text),
+                                                    place:
+                                                        _placeController.text,
+                                                    typePhotographer:
+                                                        selecteType),
+                                                value.user!.uid);
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const PhotoHome()));
+                                      }).onError((error, stackTrace) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                                content:
+                                                    Text(error.toString())));
+                                      })
+                                    : ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                            content: Text("Select type ")));
                           }
                         },
                         child: Text(_isLogin ? 'Login' : 'Register'),

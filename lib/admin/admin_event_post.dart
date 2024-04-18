@@ -66,7 +66,7 @@ class _AdminEventPostState extends State<AdminEventPost> {
                     onPressed: () {
                       _pickImageFromGallery();
                     },
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.image,
                       size: 50,
                     )),
@@ -74,7 +74,7 @@ class _AdminEventPostState extends State<AdminEventPost> {
                     onPressed: () {
                       _pickImageFromCamera();
                     },
-                    icon: Icon(
+                    icon: const Icon(
                       CupertinoIcons.camera,
                       size: 50,
                     ))
@@ -113,7 +113,7 @@ class _AdminEventPostState extends State<AdminEventPost> {
   String uniqueImageName = DateTime.now().microsecondsSinceEpoch.toString();
 
   DataBaseMethods methods = DataBaseMethods();
-
+  String? groupedvalue;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -172,6 +172,7 @@ class _AdminEventPostState extends State<AdminEventPost> {
                   height: 10,
                 ),
                 TextFormField(
+                  textCapitalization: TextCapitalization.words,
                   controller: titleController,
                   validator: (title) {
                     if (title == null || title.isEmpty) {
@@ -188,6 +189,7 @@ class _AdminEventPostState extends State<AdminEventPost> {
                   height: 20,
                 ),
                 TextFormField(
+                  // enabled: false,
                   controller: dateController,
                   validator: (date) {
                     if (date == null || date.isEmpty) {
@@ -195,6 +197,9 @@ class _AdminEventPostState extends State<AdminEventPost> {
                     }
                   },
                   decoration: InputDecoration(
+                      disabledBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black),
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
                       hintText: 'Deadline in YYYY-MM-DD',
                       border: const OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(10))),
@@ -209,6 +214,7 @@ class _AdminEventPostState extends State<AdminEventPost> {
                   height: 20,
                 ),
                 TextFormField(
+                  textCapitalization: TextCapitalization.sentences,
                   controller: prizeController,
                   validator: (prize) {
                     if (prize == null || prize.isEmpty) {
@@ -225,6 +231,7 @@ class _AdminEventPostState extends State<AdminEventPost> {
                   height: 20,
                 ),
                 TextFormField(
+                  textCapitalization: TextCapitalization.sentences,
                   controller: placeController,
                   validator: (place) {
                     if (place == null || place.isEmpty) {
@@ -240,43 +247,87 @@ class _AdminEventPostState extends State<AdminEventPost> {
                 const SizedBox(
                   height: 20,
                 ),
+                RadioListTile(
+                    fillColor: const MaterialStatePropertyAll(Colors.red),
+                    title: const Text(
+                      "Paid",
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    value: "Paid",
+                    groupValue: groupedvalue,
+                    onChanged: (value) {
+                      setState(() {
+                        groupedvalue = value;
+                      });
+                    }),
+                RadioListTile(
+                    fillColor: const MaterialStatePropertyAll(Colors.green),
+                    title: const Text(
+                      "Free",
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    value: "Free",
+                    groupValue: groupedvalue,
+                    onChanged: (value) {
+                      setState(() {
+                        groupedvalue = value;
+                      });
+                    }),
                 ElevatedButton(
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      Reference referenceDirImage =
-                          FirebaseStorage.instance.ref().child('images');
-                      Reference referenceImageToUpload =
-                          referenceDirImage.child(uniqueImageName);
-                      try {
-                        await referenceImageToUpload.putFile(selectedImage!);
-                        imageURL =
-                            await referenceImageToUpload.getDownloadURL();
-                      } catch (error) {
-                        log(error as num);
+                      if (groupedvalue != null) {
+                        Reference referenceDirImage =
+                            FirebaseStorage.instance.ref().child('images');
+                        Reference referenceImageToUpload =
+                            referenceDirImage.child(uniqueImageName);
+                        try {
+                          await referenceImageToUpload.putFile(selectedImage!);
+                          imageURL =
+                              await referenceImageToUpload.getDownloadURL();
+                        } catch (error) {
+                          log(error as num);
+                        }
+                        String id = randomAlphaNumeric(10);
+
+                        await AdminController()
+                            .addAdminCompetition(
+                                AddCompetitionModel(
+                                    payment:
+                                        groupedvalue == "Paid" ? true : false,
+                                    deadline: dateController.text,
+                                    eventId: id,
+                                    eventUploadedDate:
+                                        DateTime.now().toString().split(" ")[0],
+                                    imageURL: imageURL,
+                                    place: placeController.text,
+                                    prizeAndDescription: prizeController.text,
+                                    title: titleController.text),
+                                id)
+                            .then((value) {
+                          Fluttertoast.showToast(
+                              msg: "Data Uploaded Successfully",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.CENTER,
+                              timeInSecForIosWeb: 1,
+                              backgroundColor: Colors.grey,
+                              textColor: Colors.white,
+                              fontSize: 16.0);
+                        });
+                        setState(() {
+                          _image = null;
+                          selectedImage = null;
+                          imageURL = '';
+                          titleController.clear();
+                          dateController.clear();
+                          prizeController.clear();
+                          placeController.clear();
+                          groupedvalue = null;
+                        });
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                            content: Text("Select the payment option")));
                       }
-                      String id = randomAlphaNumeric(10);
-                     
-                      await AdminController()
-                          .addAdminCompetition(AddEventModel(deadline:dateController.text, eventId: id, eventUploadedDate: DateTime.now().toString().split(" ")[0], imageURL: imageURL, place: placeController.text, prizeAndDescription: prizeController.text, title: titleController.text), id)
-                          .then((value) {
-                        Fluttertoast.showToast(
-                            msg: "Data Uploaded Successfully",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.CENTER,
-                            timeInSecForIosWeb: 1,
-                            backgroundColor: Colors.grey,
-                            textColor: Colors.white,
-                            fontSize: 16.0);
-                      });
-                      setState(() {
-                        _image = null;
-                        selectedImage = null;
-                        imageURL = '';
-                        titleController.clear();
-                        dateController.clear();
-                        prizeController.clear();
-                        placeController.clear();
-                      });
                     }
                   },
                   style: ElevatedButton.styleFrom(

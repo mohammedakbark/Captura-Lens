@@ -25,98 +25,107 @@ class _AdminComplaintsVIewState extends State<AdminComplaintsVIew> {
     super.initState();
   }
 
-  Widget allComplaintDetails(){
-    return StreamBuilder(stream: complaintsStream, builder: (context, AsyncSnapshot snapshot){
-      return snapshot.hasData? ListView.builder(itemCount: snapshot.data.docs.length, itemBuilder: (context, index) {
-        DocumentSnapshot ds = snapshot.data.docs[index];
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-          height: 200,
-          decoration: BoxDecoration(
-              color: Colors.black,
-              border: Border.all(color: Colors.white),
-              borderRadius: BorderRadius.all(Radius.circular(10))),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  CircleAvatar(
-                    backgroundColor: Colors.grey,
-                    radius: 30,
-                  ),
-                  SizedBox(
-                    width: 15,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        ds["Complaint"],
-                        style: TextStyle(color: Colors.white),
+  Widget allComplaintDetails() {
+    return StreamBuilder(
+        stream: complaintsStream,
+        builder: (context, AsyncSnapshot snapshot) {
+          return snapshot.hasData
+              ? ListView.builder(
+                  itemCount: snapshot.data.docs.length,
+                  itemBuilder: (context, index) {
+                    DocumentSnapshot ds = snapshot.data.docs[index];
+                    return Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 15, vertical: 5),
+                      height: 200,
+                      decoration: BoxDecoration(
+                          color: Colors.black,
+                          border: Border.all(color: Colors.white),
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              CircleAvatar(
+                                backgroundColor: Colors.grey,
+                                radius: 30,
+                              ),
+                              SizedBox(
+                                width: 15,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    ds["Complaint"],
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Text(
+                                    ds["Name"],
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Text(
+                                    ds["Phone"],
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () {},
+                                style: ElevatedButton.styleFrom(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 12, horizontal: 40),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    foregroundColor: Colors.black,
+                                    backgroundColor: Colors.white),
+                                child: const Text(
+                                  "Accept",
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {},
+                                style: ElevatedButton.styleFrom(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 12, horizontal: 40),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    foregroundColor: Colors.black,
+                                    backgroundColor: Colors.white),
+                                child: const Text(
+                                  "Mark as Solved",
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              )
+                            ],
+                          )
+                        ],
                       ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      Text(
-                        ds["Name"],
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      Text(
-                        ds["Phone"],
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                    ],
-                  )
-                ],
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 12, horizontal: 40),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                        foregroundColor: Colors.black,
-                        backgroundColor: Colors.white),
-                    child: const Text(
-                      "Accept",
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 12, horizontal: 40),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                        foregroundColor: Colors.black,
-                        backgroundColor: Colors.white),
-                    child: const Text(
-                      "Mark as Solved",
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  )
-                ],
-              )
-            ],
-          ),
-        );
-      }): Container();
-    });
+                    );
+                  })
+              : Container();
+        });
   }
 
   @override
@@ -137,7 +146,10 @@ class _AdminComplaintsVIewState extends State<AdminComplaintsVIew> {
                 children: [
                   Text(
                     "View Complaints",
-                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 25),
                   ),
                 ],
               ),

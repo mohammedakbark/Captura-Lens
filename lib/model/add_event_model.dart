@@ -1,4 +1,4 @@
-class AddEventModel {
+class AddCompetitionModel {
   String imageURL;
   String title;
   String deadline;
@@ -6,9 +6,11 @@ class AddEventModel {
   String place;
   String eventId;
   String eventUploadedDate;
+  bool payment;
 
-  AddEventModel(
+  AddCompetitionModel(
       {required this.deadline,
+      required this.payment,
       required this.eventId,
       required this.eventUploadedDate,
       required this.imageURL,
@@ -17,11 +19,12 @@ class AddEventModel {
       required this.title});
   Map<String, dynamic> toJson() => {
         "imageURL": imageURL,
+        "payment":payment,
         "title": title,
         "deadline": deadline,
         "prizeAndDescription": prizeAndDescription,
         "place": place,
-        "id": eventId
-        ,"eventUploadedDate":eventUploadedDate
+        "id": eventId,
+        "eventUploadedDate": eventUploadedDate
       };
 }

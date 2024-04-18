@@ -27,101 +27,10 @@ class _AdminHomeDetailsState extends State<AdminHomeDetails> {
     super.initState();
   }
 
-  Widget allCompetitionDetails() {
-    return StreamBuilder(
-        stream: competitionStream,
-        builder: (context, AsyncSnapshot snapshot) {
-          return snapshot.hasData
-              ? snapshot.data.docs.isEmpty
-                  ? const Center(
-                      child: Text("No Events Uploaded"),
-                    )
-                  : ListView.builder(
-                      itemCount: snapshot.data.docs.length,
-                      itemBuilder: (context, index) {
-                        DocumentSnapshot ds = snapshot.data.docs[index];
-                        return Container(
-                          height: 130,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(color: Colors.grey)),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                Column(
-                                  children: [
-                                    Container(
-                                      color: Colors.grey,
-                                      width: 50,
-                                      height: 70,
-                                      child: ds.exists
-                                          ? Image.network(
-                                              ds["imageURL"],
-                                            )
-                                          : const Center(child: Text("Photo")),
-                                    ),
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
-                                    const Text(
-                                      "Paid/Unpaid",
-                                      style: TextStyle(fontSize: 8),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  width: 30,
-                                ),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        ds["title"],
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      const SizedBox(
-                                        height: 8,
-                                      ),
-                                      Text(
-                                        ds["prizeAndDescription"],
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      const SizedBox(
-                                        height: 8,
-                                      ),
-                                      Text(
-                                        ds["deadline"],
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      const SizedBox(
-                                        height: 8,
-                                      ),
-                                      Text(
-                                        ds["place"],
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        );
-                      })
-              : Container();
-        });
-  }
-
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return SafeArea(
       child: Column(
         children: [
@@ -132,6 +41,8 @@ class _AdminHomeDetailsState extends State<AdminHomeDetails> {
                 Expanded(
                   child: TextFormField(
                     decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
                       suffixIcon: const Icon(CupertinoIcons.search),
                       hintText: "Search",
                       border: OutlineInputBorder(
@@ -159,10 +70,123 @@ class _AdminHomeDetailsState extends State<AdminHomeDetails> {
             ),
           ),
           Expanded(
-            child: Column(
-              children: [
-                Expanded(child: allCompetitionDetails()),
-              ],
+            child: Container(
+              color: Colors.white,
+              margin: EdgeInsets.all(10),
+              child: StreamBuilder(
+                  stream: competitionStream,
+                  builder: (context, AsyncSnapshot snapshot) {
+                    return snapshot.hasData
+                        ? snapshot.data.docs.isEmpty
+                            ? const Center(
+                                child: Text(
+                                  "No Events",
+                                ),
+                              )
+                            : ListView.builder(
+                                itemCount: snapshot.data.docs.length,
+                                itemBuilder: (context, index) {
+                                  DocumentSnapshot ds =
+                                      snapshot.data.docs[index];
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        border: Border.all(color: Colors.grey)),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          Column(
+                                            children: [
+                                              Container(
+                                                color: Colors.grey,
+                                                width: size.width * .3,
+                                                // height: size.height * .18,
+                                                child: ds.exists
+                                                    ? Image.network(
+                                                        ds["imageURL"],
+                                                      )
+                                                    : const Center(
+                                                        child: Text("Photo")),
+                                              ),
+                                              const SizedBox(
+                                                height: 20,
+                                              ),
+                                              Text(
+                                                ds["payment"] == false
+                                                    ? "Free"
+                                                    : "Paid",
+                                                style: TextStyle(
+                                                    fontSize: 15,
+                                                    color:
+                                                        ds["payment"] == false
+                                                            ? Colors.green
+                                                            : Colors.red),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(
+                                            width: 30,
+                                          ),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  ds["title"],
+                                                  style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                const SizedBox(
+                                                  height: 8,
+                                                ),
+                                                Text(
+                                                  ds["prizeAndDescription"],
+                                                  style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                const SizedBox(
+                                                  height: 8,
+                                                ),
+                                                Text(
+                                                  "Deadline : ${ds["deadline"]}",
+                                                  style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                const SizedBox(
+                                                  height: 8,
+                                                ),
+                                                Text(
+                                                  "Place : ${ds["place"]}",
+                                                  style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                })
+                        : const Center(
+                            child: Text("Loading .."),
+                          );
+                  }),
+              // child: InkWell(
+              //     onTap: () {
+              //       Navigator.push(
+              //           context,
+              //           MaterialPageRoute(
+              //               builder: (context) => const PhotoEventDetails()));
+              //     },
+              //     child: allCompetitionDetails()),
             ),
           )
         ],

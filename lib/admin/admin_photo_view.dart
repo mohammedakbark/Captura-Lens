@@ -30,111 +30,134 @@ class _AdminPhotoViewState extends State<AdminPhotoView> {
         stream: photoStream,
         builder: (context, AsyncSnapshot snapshot) {
           return snapshot.hasData
-              ? ListView.builder(
-                  itemCount: snapshot.data.docs.length,
-                  itemBuilder: (context, index) {
-                    DocumentSnapshot ds = snapshot.data.docs[index];
-                    return Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 15, vertical: 5),
-                      height: 200,
-                      decoration: BoxDecoration(
-                          color: Colors.black,
-                          border: Border.all(color: Colors.white),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(10))),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
+              ? snapshot.data.docs.isEmpty
+                  ? Center(
+                      child: Text(
+                        "No Photographers",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    )
+                  : ListView.builder(
+                      itemCount: snapshot.data.docs.length,
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot ds = snapshot.data.docs[index];
+                        return Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 15, vertical: 5),
+                          height: 200,
+                          decoration: BoxDecoration(
+                              color: Colors.black,
+                              border: Border.all(color: Colors.white),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(10))),
+                          child: Column(
                             children: [
-                              CircleAvatar(
-                                backgroundColor: Colors.grey,
-                                radius: 30,
-                                backgroundImage: ds["profileUrl"].isEmpty
-                                    ? null
-                                    : NetworkImage(ds["profileUrl"]),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  CircleAvatar(
+                                    backgroundColor: Colors.grey,
+                                    radius: 30,
+                                    backgroundImage: ds["profileUrl"].isEmpty
+                                        ? null
+                                        : NetworkImage(ds["profileUrl"]),
+                                  ),
+                                  const SizedBox(
+                                    width: 15,
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        ds["email"],
+                                        style: const TextStyle(
+                                            color: Colors.white),
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text(
+                                        ds["phoneNumber"].toString(),
+                                        style: const TextStyle(
+                                            color: Colors.white),
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text(
+                                        ds["place"],
+                                        style: const TextStyle(
+                                            color: Colors.white),
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text(
+                                        ds["typePhotographer"],
+                                        style: const TextStyle(
+                                            color: Colors.white),
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                    ],
+                                  )
+                                ],
                               ),
                               const SizedBox(
-                                width: 15,
+                                height: 20,
                               ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    ds["email"],
-                                    style: const TextStyle(color: Colors.white),
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    ds["phoneNumber"].toString(),
-                                    style: const TextStyle(color: Colors.white),
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    ds["place"],
-                                    style: const TextStyle(color: Colors.white),
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    ds["typePhotographer"],
-                                    style: const TextStyle(color: Colors.white),
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
+                                  // ElevatedButton(
+                                  //   onPressed: () {},
+                                  //   style: ElevatedButton.styleFrom(
+                                  //       padding: const EdgeInsets.symmetric(
+                                  //           vertical: 12, horizontal: 40),
+                                  //       shape: RoundedRectangleBorder(
+                                  //           borderRadius:
+                                  //               BorderRadius.circular(10)),
+                                  //       foregroundColor: Colors.black,
+                                  //       backgroundColor: Colors.white),
+                                  //   child: const Text(
+                                  //     "Accepted",
+                                  //     style: TextStyle(color: Colors.black),
+                                  //   ),
+                                  // ),
+
+                                  ElevatedButton(
+                                    onPressed: () async {
+                                      AdminController()
+                                          .deletePGPost(ds["id"])
+                                          .then((v) {
+                                        AdminController()
+                                            .deletePG(ds["id"])
+                                            .then((value) {
+                                          setState(() {});
+                                        });
+                                      });
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 12, horizontal: 40),
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        foregroundColor: Colors.black,
+                                        backgroundColor: Colors.white),
+                                    child: const Text(
+                                      "Remove",
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                  )
                                 ],
                               )
                             ],
                           ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              ElevatedButton(
-                                onPressed: () {},
-                                style: ElevatedButton.styleFrom(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 12, horizontal: 40),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                    foregroundColor: Colors.black,
-                                    backgroundColor: Colors.white),
-                                child: const Text(
-                                  "Accepted",
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              ),
-                              ElevatedButton(
-                                onPressed: () async {},
-                                style: ElevatedButton.styleFrom(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 12, horizontal: 40),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                    foregroundColor: Colors.black,
-                                    backgroundColor: Colors.white),
-                                child: const Text(
-                                  "Remove",
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              )
-                            ],
-                          )
-                        ],
-                      ),
-                    );
-                  })
+                        );
+                      })
               : Container();
         });
   }

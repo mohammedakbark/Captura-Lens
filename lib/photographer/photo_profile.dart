@@ -29,18 +29,18 @@ class PhotoProfile extends StatefulWidget {
 }
 
 class _PhotoProfileState extends State<PhotoProfile> {
-  Stream? photoProfileStream;
+  // Stream? photoProfileStream;
 
-  getOnTheLoad() async {
-    photoProfileStream = await AdminController().getPhotographerDetails();
-    setState(() {});
-  }
+  // getOnTheLoad() async {
+  //   photoProfileStream = await AdminController().getPhotographerDetails();
+  //   setState(() {});
+  // }
 
-  @override
-  void initState() {
-    getOnTheLoad();
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   getOnTheLoad();
+  //   super.initState();
+  // }
 
   final List<Widget> _pages = <Widget>[
     const AboutUs(),
@@ -150,10 +150,6 @@ class _PhotoProfileState extends State<PhotoProfile> {
                               ),
                               const SizedBox(
                                 height: 3,
-                              ),
-                              Text(
-                                userData.place,
-                                style: const TextStyle(color: Colors.white),
                               ),
                               Row(
                                 children: [

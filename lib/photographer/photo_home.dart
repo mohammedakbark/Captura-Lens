@@ -21,7 +21,6 @@ class PhotoHome extends StatefulWidget {
 }
 
 class _PhotoHomeState extends State<PhotoHome> {
-
   int _selectedIndex = 0;
 
   // void showImagePickerOptions(BuildContext context) {
@@ -82,18 +81,17 @@ class _PhotoHomeState extends State<PhotoHome> {
   //   Navigator.of(context).pop();
   // }
 
-
-
   final List<Widget> _widgetOptions = <Widget>[
     const PhotoHomeDetails(),
     const PhotoActivity(),
     const PhotoAddPost(),
     const PhotoNotification(),
-    PhotoProfile(isPhoto: true,)
-
+    PhotoProfile(
+      isPhoto: true,
+    )
   ];
 
-  void _onItemTapped (int index){
+  void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
@@ -102,6 +100,7 @@ class _PhotoHomeState extends State<PhotoHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       body: Container(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
@@ -121,8 +120,10 @@ class _PhotoHomeState extends State<PhotoHome> {
               ),
               label: ''),
           BottomNavigationBarItem(
-              icon: Icon(Icons.add,
-                  color: Colors.black,),
+              icon: Icon(
+                Icons.add,
+                color: Colors.black,
+              ),
               label: ''),
           BottomNavigationBarItem(
               icon: Icon(

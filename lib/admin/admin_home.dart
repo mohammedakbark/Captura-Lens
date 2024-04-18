@@ -22,10 +22,9 @@ class _AdminHomeState extends State<AdminHome> {
     const AdminEventPost(),
     const AdminNotification(),
     const AdminActivity()
-
   ];
 
-  void _onItemTapped (int index){
+  void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
@@ -33,14 +32,11 @@ class _AdminHomeState extends State<AdminHome> {
 
   @override
   Widget build(BuildContext context) {
-
     var size = MediaQuery.of(context).size;
 
     return Scaffold(
-      body: Container(
-        height: size.height,
-        child: _widgetOptions.elementAt(_selectedIndex),
-      ),
+      backgroundColor: Colors.black,
+      body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: CustomColors.buttonGrey,
         items: const [

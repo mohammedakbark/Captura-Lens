@@ -126,10 +126,10 @@ class _UserEventBookingState extends State<UserEventBooking> {
                           foregroundColor: Colors.white,
                           backgroundColor: CustomColors.buttonGreen),
                       onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => UserCategories()));
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //         builder: (context) => UserCategories()));
                       },
                       child: Text('Book'),
                     ),

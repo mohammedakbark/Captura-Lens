@@ -1,4 +1,5 @@
 import 'package:captura_lens/model/add_post.dart';
+import 'package:captura_lens/model/new_photographer.dart';
 import 'package:captura_lens/model/user_model.dart';
 import 'package:captura_lens/user/user_home.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -76,10 +77,37 @@ class UserController with ChangeNotifier {
     }).toList();
   }
 
- Future<UserModel?> fetchSelectedPhotoGraphererData(uid) async {
+  NewPhotographer? selectedpGData;
+  Future<NewPhotographer?> fetchSelectedPhotoGraphererData(uid) async {
     final snapshot = await db.collection("Photographers").doc(uid).get();
     if (snapshot.exists) {
-      return UserModel.fromJson(snapshot.data()!);
+      selectedpGData = NewPhotographer.fromJson(snapshot.data()!);
+      return selectedpGData;
     }
+    return null;
+  }
+
+  List<AddPost> selectedPgPhotos = [];
+  Future readselectedPhotoGrapherrPhotos(uid) async {
+    final snapshot = await db
+        .collection("Posts")
+        .where("uid", isEqualTo:uid )
+        .get();
+
+    selectedPgPhotos = snapshot.docs.map((e) {
+      return AddPost.fromJson(e.data());
+    }).toList();
+  }
+
+  List<NewPhotographer> sortList = [];
+  Future sortPhotographersByType(type) async {
+    final snapshot = await db
+        .collection("Photographers")
+        .where("typePhotographer", isEqualTo: type)
+        .get();
+
+    sortList = snapshot.docs.map((e) {
+      return NewPhotographer.fromJson(e.data());
+    }).toList();
   }
 }
