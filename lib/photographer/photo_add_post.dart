@@ -74,16 +74,16 @@ class _PhotoAddPostState extends State<PhotoAddPost> {
         actions: [
           TextButton(
               onPressed: () {
-                _pickImageFromGallery().then((value) async {
-                  if (value != null) {
+                _pickImageFromGallery().then((file) async {
+                  if (file != null) {
                     Navigator.of(context)
                         .push(MaterialPageRoute(
                             builder: (context) => ImageEditor(
-                                  image: value,
+                                  image: file,
                                 )))
-                        .then((value) {
+                        .then((edited) {
                       setState(() {
-                        editedImage = value;
+                        editedImage = edited;
                       });
                     });
                   } else {
@@ -95,16 +95,16 @@ class _PhotoAddPostState extends State<PhotoAddPost> {
               child: const Text("Gallery")),
           TextButton(
               onPressed: () async {
-                _pickImageFromCamera().then((value) async {
-                  if (value != null) {
+                _pickImageFromCamera().then((file) async {
+                  if (file != null) {
                     Navigator.of(context)
                         .push(MaterialPageRoute(
                             builder: (context) => ImageEditor(
-                                  image: value,
+                                  image: file,
                                 )))
-                        .then((value) {
+                        .then((edited) {
                       setState(() {
-                        editedImage = value;
+                        editedImage = edited;
                       });
                     });
                   } else {
@@ -130,19 +130,18 @@ class _PhotoAddPostState extends State<PhotoAddPost> {
                         decoration: BoxDecoration(
                             color: Colors.grey,
                             border: Border.all(color: Colors.white)),
-                        child: const Center(child: Text("Selected Photo")),
+                        child: const Center(child: Text("Select Photo")),
                       ));
           }),
         ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-        
-
           if (selectedImage != null) {
             SettableMetadata metadata =
                 SettableMetadata(contentType: "image/jpeg");
-            Reference referenceDirImage = FirebaseStorage.instance.ref().child('images');
+            Reference referenceDirImage =
+                FirebaseStorage.instance.ref().child('images');
             Reference referenceImageToUpload = referenceDirImage.child(
               uniqueImageName,
             );

@@ -13,28 +13,29 @@ class _AdminUserViewState extends State<AdminUserView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
         iconTheme: IconThemeData(color: Colors.white),
       ),
-      body: Container(
-        color: Colors.black,
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            const Padding(
-              padding: EdgeInsets.only(left: 20.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "View Users",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 25),
-                  ),
-                ],
-              ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "View Users",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 25),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 20,
             ),
             StreamBuilder(
                 stream: AdminController().fetchAllUsers().asStream(),
@@ -55,13 +56,15 @@ class _AdminUserViewState extends State<AdminUserView> {
                                 style: TextStyle(color: Colors.white),
                               ),
                             )
-                          : ListView.builder(
-                              itemCount: data!.length,
+                          : ListView.separated(
+                              separatorBuilder: (context, index) => SizedBox(
+                                    height: 20,
+                                  ),
+                              itemCount: data.length,
                               itemBuilder: (context, index) {
                                 return Container(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 15, vertical: 5),
-                                  height: 200,
                                   decoration: BoxDecoration(
                                       color: Colors.black,
                                       border: Border.all(color: Colors.white),
@@ -146,14 +149,11 @@ class _AdminUserViewState extends State<AdminUserView> {
                                           // ),
                                           ElevatedButton(
                                             onPressed: () {
-                                          
-                                                 
-                                                AdminController()
-                                                    .deleteUser(data[index].id)
-                                                    .then((value) {
-                                                  setState(() {});
-                                                });
-                                          
+                                              AdminController()
+                                                  .deleteUser(data[index].id)
+                                                  .then((value) {
+                                                setState(() {});
+                                              });
                                             },
                                             style: ElevatedButton.styleFrom(
                                                 padding:

@@ -1,11 +1,16 @@
+import 'package:captura_lens/model/complaint_model.dart';
+import 'package:captura_lens/model/notification_model.dart';
 import 'package:captura_lens/photographer/photo_profile.dart';
 import 'package:captura_lens/services/database.dart';
+import 'package:captura_lens/services/user_controller.dart';
+import 'package:captura_lens/utils/const.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:random_string/random_string.dart';
 
-import 'constants.dart';
+import '../constants.dart';
 
 class ComplaintsPage extends StatefulWidget {
   const ComplaintsPage({super.key});
@@ -73,6 +78,15 @@ class _ComplaintsPageState extends State<ComplaintsPage> {
                         height: 70,
                       ),
                       TextFormField(
+                        textCapitalization: TextCapitalization.sentences,
+                        maxLines: 4,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "This field is required";
+                          } else {
+                            return null;
+                          }
+                        },
                         controller: complaintsController,
                         decoration: const InputDecoration(
                           hintText: 'Type your Complaints',
@@ -85,6 +99,14 @@ class _ComplaintsPageState extends State<ComplaintsPage> {
                         height: 10,
                       ),
                       TextFormField(
+                        textCapitalization: TextCapitalization.words,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "This field is required";
+                          } else {
+                            return null;
+                          }
+                        },
                         controller: nameController,
                         decoration: const InputDecoration(
                           hintText: 'Enter Your Name',
@@ -97,6 +119,13 @@ class _ComplaintsPageState extends State<ComplaintsPage> {
                         height: 20,
                       ),
                       TextFormField(
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "This field is required";
+                          } else {
+                            return null;
+                          }
+                        },
                         controller: phoneController,
                         keyboardType: TextInputType.phone,
                         decoration: const InputDecoration(
@@ -111,25 +140,41 @@ class _ComplaintsPageState extends State<ComplaintsPage> {
                       ),
                       ElevatedButton(
                         onPressed: () async {
-                          String id = randomAlphaNumeric(10);
-                          Map<String, dynamic> complaintsInfoMap = {
-                            "Complaint": complaintsController.text,
-                            "Name": nameController.text,
-                            "Phone": phoneController.text,
-                            "id": id
-                          };
-                          await DataBaseMethods()
-                              .complaintsDetails(complaintsInfoMap, id).then((value) {
-                            Fluttertoast.showToast(
-                                msg: "Complaint Registered",
-                                toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.CENTER,
-                                timeInSecForIosWeb: 1,
-                                backgroundColor: Colors.grey,
-                                textColor: Colors.white,
-                                fontSize: 16.0);
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=> PhotoProfile(isPhoto: true)));
-                          });
+                          if (_formKey.currentState!.validate()) {
+                            UserController()
+                                .registerComplaint(ComplaintModel(
+                                    status: "Registerd",
+                                    complaint: complaintsController.text,
+                                    name: nameController.text,
+                                    phoneNumber: phoneController.text,
+                                    uid:
+                                        FirebaseAuth.instance.currentUser!.uid))
+                                .then((compaitId) {
+                              UserController().sendNotificationtouser(
+                                  NotificationModel(
+                                      date: date,
+                                      fromId: FirebaseAuth
+                                          .instance.currentUser!.uid,
+                                      type: "User",
+                                      message:
+                                          "User id : ${FirebaseAuth.instance.currentUser!.uid}\nComplaint id : ${compaitId}\n${complaintsController.text}",
+                                      time: time,
+                                      toId: adminuid));
+                            }).then((value) {
+                              Fluttertoast.showToast(
+                                  msg: "Complaint Registered",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.CENTER,
+                                  timeInSecForIosWeb: 1,
+                                  backgroundColor: Colors.grey,
+                                  textColor: Colors.white,
+                                  fontSize: 16.0);
+                              complaintsController.clear();
+                              nameController.clear();
+                              phoneController.clear();
+                              Navigator.of(context).pop();
+                            });
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                             backgroundColor: CustomColors.buttonGreen,

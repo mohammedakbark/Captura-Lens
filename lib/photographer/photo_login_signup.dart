@@ -1,6 +1,6 @@
 import 'package:captura_lens/admin/admin_event_post.dart';
 import 'package:captura_lens/forgot_password.dart';
-import 'package:captura_lens/model/new_photographer.dart';
+import 'package:captura_lens/model/photographer_model.dart';
 import 'package:captura_lens/photographer/photo_home.dart';
 import 'package:captura_lens/photographer/photo_send_otp.dart';
 import 'package:captura_lens/services/database.dart';
@@ -36,8 +36,6 @@ class _PhotoLoginSignUpState extends State<PhotoLoginSignUp> {
   bool _isLogin = true;
   bool _isChecked = false;
   bool _isObscured = true;
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -429,7 +427,7 @@ class _PhotoLoginSignUpState extends State<PhotoLoginSignUp> {
                                         .then((value) async {
                                         await PhotographerController()
                                             .addPhotoDetails(
-                                                NewPhotographer(
+                                                PhotographerModel(
                                                     profileUrl: "",
                                                     adherNumber: int.parse(
                                                         _aadhaarController

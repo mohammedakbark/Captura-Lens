@@ -1,3 +1,4 @@
+import 'package:captura_lens/model/like_post_model.dart';
 import 'package:captura_lens/services/user_controller.dart';
 import 'package:captura_lens/splash_screen.dart';
 import 'package:captura_lens/user/user_categories.dart';
@@ -8,100 +9,96 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-class UserHomeDetails extends StatefulWidget {
-  const UserHomeDetails({super.key});
+class UserHomeDetails extends StatelessWidget {
+  UserHomeDetails({super.key});
 
-  @override
-  State<UserHomeDetails> createState() => _UserHomeDetailsState();
-}
-
-class _UserHomeDetailsState extends State<UserHomeDetails> {
   // SearchController _searchController = SearchController();
   TextEditingController _searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<UserController>(builder: (context, controller, child) {
-      return Padding(
-        padding: const EdgeInsets.only(top: 30.0),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        suffixIcon: const Icon(
-                          Icons.search,
-                          color: CupertinoColors.black,
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                        hintText: "Search",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
+    print("hello");
+    return Padding(
+      padding: const EdgeInsets.only(top: 30.0),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      suffixIcon: const Icon(
+                        Icons.search,
+                        color: CupertinoColors.black,
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      hintText: "Search",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 8.0),
-                  // IconButton(
-                  //   icon: const Icon(
-                  //     Icons.power_settings_new_rounded,
-                  //     color: Color.fromARGB(255, 229, 43, 30),
-                  //   ),
-                  //   onPressed: () {
-                  //     FirebaseAuth.instance.signOut().then((value) {
-                  //       Navigator.of(context).pushAndRemoveUntil(
-                  //           MaterialPageRoute(
-                  //               builder: (context) => const SplashScreen()),
-                  //           (route) => false);
-                  //     });
-                  //   },
-                  // ),
-                ],
-              ),
+                ),
+                const SizedBox(width: 8.0),
+                // IconButton(
+                //   icon: const Icon(
+                //     Icons.power_settings_new_rounded,
+                //     color: Color.fromARGB(255, 229, 43, 30),
+                //   ),
+                //   onPressed: () {
+                //     FirebaseAuth.instance.signOut().then((value) {
+                //       Navigator.of(context).pushAndRemoveUntil(
+                //           MaterialPageRoute(
+                //               builder: (context) => const SplashScreen()),
+                //           (route) => false);
+                //     });
+                //   },
+                // ),
+              ],
             ),
-            const SizedBox(
-              height: 10,
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * .2,
-              child: ListView.separated(
-                  separatorBuilder: (context, index) => const SizedBox(
-                        width: 20,
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * .2,
+            child: ListView.separated(
+                separatorBuilder: (context, index) => const SizedBox(
+                      width: 20,
+                    ),
+                scrollDirection: Axis.horizontal,
+                itemCount: photographyTypes.length,
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => UserCategories(
+                                    type: photographyTypes[index],
+                                  )));
+                    },
+                    child: Container(
+                      padding: EdgeInsets.only(bottom: 20),
+                      alignment: Alignment.bottomCenter,
+                      width: MediaQuery.of(context).size.width * .6,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        color: Colors.grey,
                       ),
-                  scrollDirection: Axis.horizontal,
-                  itemCount: photographyTypes.length,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => UserCategories(
-                                      type: photographyTypes[index],
-                                    )));
-                      },
-                      child: Container(
-                        padding: EdgeInsets.only(bottom: 20),
-                        alignment: Alignment.bottomCenter,
-                        width: MediaQuery.of(context).size.width * .6,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30),
-                          color: Colors.grey,
-                        ),
-                        child: Text(
-                          photographyTypes[index],
-                          style: const TextStyle(color: Colors.white),
-                        ),
+                      child: Text(
+                        photographyTypes[index],
+                        style: const TextStyle(color: Colors.white),
                       ),
-                    );
-                  }),
-            ),
-            Expanded(
+                    ),
+                  );
+                }),
+          ),
+          Consumer<UserController>(builder: (context, controller, child) {
+            return Expanded(
               child: Column(
                 children: [
                   FutureBuilder(
@@ -183,12 +180,34 @@ class _UserHomeDetailsState extends State<UserHomeDetails> {
                                       ),
                                       Row(
                                         children: [
-                                          IconButton(
-                                              onPressed: () {},
-                                              icon: const Icon(
-                                                CupertinoIcons.heart_fill,
-                                                color: Colors.white,
-                                              )),
+                                          Consumer<UserController>(builder:
+                                              (context, likeController, child) {
+                                            return IconButton(
+                                                onPressed: () {
+                                                  likeController.likePost(
+                                                      LikePostModel(
+                                                          likedUid: FirebaseAuth
+                                                              .instance
+                                                              .currentUser!
+                                                              .uid,
+                                                          postId:
+                                                              postList[index]
+                                                                  .postId),
+                                                      FirebaseAuth
+                                                              .instance
+                                                              .currentUser!
+                                                              .uid +
+                                                          postList[index]
+                                                              .postId);
+                                                },
+                                                icon: Icon(
+                                                  snapshot.data == true
+                                                      ? CupertinoIcons
+                                                          .heart_fill
+                                                      : CupertinoIcons.heart,
+                                                  color: Colors.white,
+                                                ));
+                                          }),
                                           IconButton(
                                               onPressed: () {},
                                               icon: const Icon(
@@ -214,10 +233,10 @@ class _UserHomeDetailsState extends State<UserHomeDetails> {
                       }),
                 ],
               ),
-            )
-          ],
-        ),
-      );
-    });
+            );
+          })
+        ],
+      ),
+    );
   }
 }

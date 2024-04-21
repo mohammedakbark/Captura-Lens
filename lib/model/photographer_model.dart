@@ -1,4 +1,4 @@
-class NewPhotographer {
+class PhotographerModel {
   String email;
   String password;
   String place;
@@ -8,7 +8,7 @@ class NewPhotographer {
   String id;
   String profileUrl;
 
-  NewPhotographer(
+  PhotographerModel(
       {required this.adherNumber,
       required this.profileUrl,
       required this.email,
@@ -29,8 +29,8 @@ class NewPhotographer {
         "profileUrl": profileUrl
       };
 
-  factory NewPhotographer.fromJson(Map<String, dynamic> json) {
-    return NewPhotographer(
+  factory PhotographerModel.fromJson(Map<String, dynamic> json) {
+    return PhotographerModel(
         adherNumber: json["adherNumber"],
         profileUrl: json["profileUrl"],
         email: json["email"],

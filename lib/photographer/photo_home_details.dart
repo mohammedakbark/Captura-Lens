@@ -98,7 +98,9 @@ class _PhotoHomeDetailsState extends State<PhotoHomeDetails> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                   PhotoEventDetails(ds: ds,)));
+                                                  PhotoEventDetails(
+                                                    ds: ds,
+                                                  )));
                                     },
                                     child: Container(
                                       decoration: BoxDecoration(
@@ -126,9 +128,16 @@ class _PhotoHomeDetailsState extends State<PhotoHomeDetails> {
                                                 const SizedBox(
                                                   height: 20,
                                                 ),
-                                                const Text(
-                                                  "Paid/Unpaid",
-                                                  style: TextStyle(fontSize: 8),
+                                                Text(
+                                                  ds["payment"] == false
+                                                      ? "Free"
+                                                      : "Paid",
+                                                  style: TextStyle(
+                                                      fontSize: 20,
+                                                      color:
+                                                          ds["payment"] == false
+                                                              ? Colors.green
+                                                              : Colors.red),
                                                 ),
                                               ],
                                             ),

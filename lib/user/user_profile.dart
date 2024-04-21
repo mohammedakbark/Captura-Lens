@@ -1,6 +1,6 @@
 import 'package:captura_lens/about_us.dart';
 import 'package:captura_lens/change_password.dart';
-import 'package:captura_lens/complaints_page.dart';
+import 'package:captura_lens/user/complaints_page.dart';
 import 'package:captura_lens/help_page.dart';
 import 'package:captura_lens/services/user_controller.dart';
 import 'package:captura_lens/splash_screen.dart';

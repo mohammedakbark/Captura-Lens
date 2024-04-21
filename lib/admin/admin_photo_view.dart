@@ -37,14 +37,16 @@ class _AdminPhotoViewState extends State<AdminPhotoView> {
                         style: TextStyle(color: Colors.white),
                       ),
                     )
-                  : ListView.builder(
+                  : ListView.separated(
+                      separatorBuilder: (context, index) => SizedBox(
+                            height: 20,
+                          ),
                       itemCount: snapshot.data.docs.length,
                       itemBuilder: (context, index) {
                         DocumentSnapshot ds = snapshot.data.docs[index];
                         return Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 15, vertical: 5),
-                          height: 200,
                           decoration: BoxDecoration(
                               color: Colors.black,
                               border: Border.all(color: Colors.white),
@@ -165,28 +167,29 @@ class _AdminPhotoViewState extends State<AdminPhotoView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
-      body: Container(
-        color: Colors.black,
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            const Padding(
-              padding: EdgeInsets.only(left: 20.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "View Photographers",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 25),
-                  ),
-                ],
-              ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "View Photographers",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 25),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 20,
             ),
             Expanded(child: allPhotographerDetails()),
           ],

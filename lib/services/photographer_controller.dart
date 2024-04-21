@@ -1,5 +1,7 @@
 import 'package:captura_lens/model/add_post.dart';
-import 'package:captura_lens/model/new_photographer.dart';
+import 'package:captura_lens/model/notification_model.dart';
+import 'package:captura_lens/model/photographer_model.dart';
+import 'package:captura_lens/model/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -8,14 +10,14 @@ import 'package:flutter/foundation.dart';
 class PhotographerController with ChangeNotifier {
   final db = FirebaseFirestore.instance;
 //------------------ r e a d
-  NewPhotographer? currentUserData;
+  PhotographerModel? currentUserData;
   Future readPhotographerData() async {
     final snapshot = await db
         .collection("Photographers")
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .get();
     if (snapshot.exists) {
-      currentUserData = NewPhotographer.fromJson(snapshot.data()!);
+      currentUserData = PhotographerModel.fromJson(snapshot.data()!);
     }
   }
 
@@ -31,16 +33,35 @@ class PhotographerController with ChangeNotifier {
     }).toList();
   }
 
-   Future<Stream<QuerySnapshot>> getCompetitionDetails()async{
-    return  FirebaseFirestore.instance.collection("Competition").snapshots();
+  Future<Stream<QuerySnapshot>> getCompetitionDetails() async {
+    return FirebaseFirestore.instance.collection("Competition").snapshots();
+  }
+
+  Future<Stream<QuerySnapshot>> getBookingDetails() async {
+    return FirebaseFirestore.instance
+        .collection("Booking Events")
+        .where("photographerId",
+            isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .snapshots();
+  }
+
+  Future<Stream<QuerySnapshot>> fetchAllNotification() async {
+    return FirebaseFirestore.instance
+        .collection("Notifications")
+        .where("toId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .snapshots();
   }
 
 //---------------------------------u p d a t e
 
 //------------d e l e t e
+  deletePostByPG(iid) async {
+    await db.collection("Posts").doc(iid).delete();
+    notifyListeners();
+  }
 
 //---------------------------------c r e a t e
-  Future addPhotoDetails(NewPhotographer newPhotographer, String id) async {
+  Future addPhotoDetails(PhotographerModel newPhotographer, String id) async {
     return await FirebaseFirestore.instance
         .collection("Photographers")
         .doc(id)
@@ -52,5 +73,27 @@ class PhotographerController with ChangeNotifier {
         .collection("Posts")
         .doc(id)
         .set(addPost.toJson());
+  }
+
+  UserModel? selecteduser;
+  Future fetchSelectedUSerData(uid) async {
+    final snapshot = await db.collection("User").doc(uid).get();
+    if (snapshot.exists) {
+      selecteduser = UserModel.fromJson(snapshot.data()!);
+    }
+  }
+
+ 
+
+  Future updateEventStatus(newStatus, docId) async {
+    await db
+        .collection("Booking Events")
+        .doc(docId)
+        .update({"status": newStatus});
+  }
+
+  sendNotificationtouser(NotificationModel notificationModel) {
+    final doc = db.collection("Notifications").doc();
+    doc.set(notificationModel.toJson(doc.id));
   }
 }

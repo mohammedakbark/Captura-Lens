@@ -18,7 +18,7 @@ class _UserHomeState extends State<UserHome> {
   int _selectIndex = 0;
 
   final List<Widget> _widgetOptions = <Widget>[
-    const UserHomeDetails(),
+     UserHomeDetails(),
     const UserActivity(),
     const UserNotification(),
     const UserProfile()

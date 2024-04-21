@@ -1,13 +1,36 @@
+import 'dart:ffi';
+
 import 'package:captura_lens/model/add_post.dart';
-import 'package:captura_lens/model/new_photographer.dart';
+import 'package:captura_lens/model/booking_model.dart';
+import 'package:captura_lens/model/complaint_model.dart';
+import 'package:captura_lens/model/like_model.dart';
+import 'package:captura_lens/model/like_post_model.dart';
+import 'package:captura_lens/model/notification_model.dart';
+import 'package:captura_lens/model/photographer_model.dart';
 import 'package:captura_lens/model/user_model.dart';
 import 'package:captura_lens/user/user_home.dart';
+import 'package:captura_lens/utils/const.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class UserController with ChangeNotifier {
+  int hours = 1;
+
+  addHour() {
+    hours++;
+
+    notifyListeners();
+  }
+
+  lessHours() {
+    if (hours != 1) {
+      hours--;
+      notifyListeners();
+    }
+  }
+
   final auth = FirebaseAuth.instance;
 
   Future userSignup(email, password, context, UserModel userModel) async {
@@ -69,6 +92,17 @@ class UserController with ChangeNotifier {
     }
   }
 
+  Future bookNewEventbyUSer(BookingModel bookingModel) async {
+    final doc = db.collection("Booking Events").doc();
+    doc.set(bookingModel.toJson(doc.id));
+  }
+
+  Future<String> registerComplaint(ComplaintModel complaintModel) async {
+    final docs = db.collection("Complaints").doc();
+    docs.set(complaintModel.toJson(docs.id));
+    return docs.id;
+  }
+
   List<AddPost> allPost = [];
   Future fetchAllPost() async {
     final snapshot = await db.collection("Posts").get();
@@ -77,29 +111,29 @@ class UserController with ChangeNotifier {
     }).toList();
   }
 
-  NewPhotographer? selectedpGData;
-  Future<NewPhotographer?> fetchSelectedPhotoGraphererData(uid) async {
-    final snapshot = await db.collection("Photographers").doc(uid).get();
-    if (snapshot.exists) {
-      selectedpGData = NewPhotographer.fromJson(snapshot.data()!);
-      return selectedpGData;
+  PhotographerModel? selectedpGData;
+  Future<PhotographerModel?> fetchSelectedPhotoGraphererData(uid) async {
+    if (uid != adminuid) {
+      final snapshot = await db.collection("Photographers").doc(uid).get();
+      if (snapshot.exists) {
+        selectedpGData = PhotographerModel.fromJson(snapshot.data()!);
+        return selectedpGData;
+      }
+      return null;
     }
-    return null;
   }
 
   List<AddPost> selectedPgPhotos = [];
   Future readselectedPhotoGrapherrPhotos(uid) async {
-    final snapshot = await db
-        .collection("Posts")
-        .where("uid", isEqualTo:uid )
-        .get();
+    final snapshot =
+        await db.collection("Posts").where("uid", isEqualTo: uid).get();
 
     selectedPgPhotos = snapshot.docs.map((e) {
       return AddPost.fromJson(e.data());
     }).toList();
   }
 
-  List<NewPhotographer> sortList = [];
+  List<PhotographerModel> sortList = [];
   Future sortPhotographersByType(type) async {
     final snapshot = await db
         .collection("Photographers")
@@ -107,7 +141,57 @@ class UserController with ChangeNotifier {
         .get();
 
     sortList = snapshot.docs.map((e) {
-      return NewPhotographer.fromJson(e.data());
+      return PhotographerModel.fromJson(e.data());
     }).toList();
+  }
+
+  List<BookingModel> mybookingList = [];
+  Future fetchCurrentuserBookingEvents() async {
+    final snapshot = await db
+        .collection("Booking Events")
+        .where("uid", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .get();
+    mybookingList = snapshot.docs.map((e) {
+      return BookingModel.fromJson(e.data());
+    }).toList();
+  }
+
+  sendNotificationtouser(NotificationModel notificationModel) {
+    final doc = db.collection("Notifications").doc();
+    doc.set(notificationModel.toJson(doc.id));
+  }
+
+  // List<NotificationModel> notifications = [];
+  Future<Stream<QuerySnapshot>> fetchAllNotification() async {
+    return FirebaseFirestore.instance
+        .collection("Notifications")
+        .where("toId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .snapshots();
+  }
+
+  //--------LIKE /COMMENT/ SAVE
+
+  likePost(LikePostModel likeModelPost, id) async {
+    final docs = db
+        .collection("LikedPosts")
+        .doc(likeModelPost.likedUid + likeModelPost.postId);
+
+    docs.set(likeModelPost.toJson(docs.id));
+    fetchLikedpost(id);
+    notifyListeners();
+  }
+
+  disLikePost(id) {
+    db.collection("LikedPosts").doc(id).delete();
+    notifyListeners();
+  }
+
+  Future<bool> fetchLikedpost(id) async {
+    final snapShot = await db.collection("LikedPosts").doc(id).get();
+    if (snapShot.exists) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

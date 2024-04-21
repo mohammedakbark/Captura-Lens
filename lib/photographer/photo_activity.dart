@@ -1,7 +1,13 @@
+import 'package:captura_lens/model/notification_model.dart';
 import 'package:captura_lens/services/database.dart';
+import 'package:captura_lens/services/photographer_controller.dart';
+import 'package:captura_lens/user/user_activity.dart';
+import 'package:captura_lens/utils/const.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class PhotoActivity extends StatefulWidget {
   const PhotoActivity({super.key});
@@ -14,7 +20,7 @@ class _PhotoActivityState extends State<PhotoActivity> {
   Stream? bookingStream;
 
   getOnTheLoad() async {
-    bookingStream = await DataBaseMethods().getBookingDetails();
+    bookingStream = await PhotographerController().getBookingDetails();
     setState(() {});
   }
 
@@ -43,104 +49,242 @@ class _PhotoActivityState extends State<PhotoActivity> {
                         return Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 15, vertical: 5),
-                          height: 200,
                           decoration: BoxDecoration(
                               color: Colors.black,
                               border: Border.all(color: Colors.white),
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(10))),
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  CircleAvatar(
-                                    backgroundColor: Colors.grey,
-                                    radius: 30,
-                                  ),
-                                  SizedBox(
-                                    width: 15,
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                  const BorderRadius.all(Radius.circular(10))),
+                          child: Consumer<PhotographerController>(
+                              builder: (context, controller, child) {
+                            return FutureBuilder(
+                                future:
+                                    controller.fetchSelectedUSerData(ds["uid"]),
+                                builder: (context, snap) {
+                                  if (snap.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const Center(
+                                      child: Text(
+                                        "Loading ...",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    );
+                                  }
+                                  final userdata = controller.selecteduser;
+                                  return Column(
                                     children: [
                                       Text(
-                                        ds["Name"],
-                                        style: TextStyle(color: Colors.white),
+                                        ds["photographyType"],
+                                        style: const TextStyle(
+                                            color: Colors.white),
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         height: 5,
                                       ),
-                                      Text(
-                                        ds["Phone Number"],
-                                        style: TextStyle(color: Colors.white),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          userdata!.profileUrl.isEmpty
+                                              ? const CircleAvatar(
+                                                  backgroundColor: Colors.grey,
+                                                  radius: 30,
+                                                  child: Icon(
+                                                    CupertinoIcons
+                                                        .profile_circled,
+                                                    color: Colors.black,
+                                                    size: 50,
+                                                  ),
+                                                )
+                                              : CircleAvatar(
+                                                  backgroundColor: Colors.grey,
+                                                  radius: 30,
+                                                  backgroundImage: NetworkImage(
+                                                      userdata.profileUrl),
+                                                ),
+                                          const SizedBox(
+                                            width: 15,
+                                          ),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                ds["name"],
+                                                style: const TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                              const SizedBox(
+                                                height: 5,
+                                              ),
+                                              Row(
+                                                children: [
+                                                  const Icon(
+                                                    Icons.phone,
+                                                    color: Colors.white,
+                                                  ),
+                                                  Text(
+                                                    userdata.phoneNumber
+                                                        .toString(),
+                                                    style: const TextStyle(
+                                                        color: Colors.white),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(
+                                                height: 5,
+                                              ),
+                                              Text(
+                                                ds["eventName"],
+                                                style: const TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                              const SizedBox(
+                                                height: 5,
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    "From : ${ds["from"]}",
+                                                    style: const TextStyle(
+                                                        color: Colors.white),
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 20,
+                                                  ),
+                                                  Text(
+                                                    "To : ${ds["to"]}",
+                                                    style: const TextStyle(
+                                                        color: Colors.white),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(
+                                                height: 5,
+                                              ),
+                                              Text(
+                                                "Time Duration : ${ds["hours"].toString()} hours",
+                                                style: const TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                              const SizedBox(
+                                                height: 5,
+                                              ),
+                                            ],
+                                          )
+                                        ],
                                       ),
-                                      SizedBox(
-                                        height: 5,
+                                      const SizedBox(
+                                        height: 20,
                                       ),
-                                      Text(
-                                        ds["Details"],
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      Text(
-                                        ds["Time Duration"],
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
+                                      ds["status"] == "Requested"
+                                          ? Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                ElevatedButton(
+                                                  onPressed: () {
+                                                    PhotographerController()
+                                                        .updateEventStatus(
+                                                            "Accepted",
+                                                            ds["bookingId"])
+                                                        .then((value) {
+                                                      PhotographerController()
+                                                          .sendNotificationtouser(
+                                                              NotificationModel(
+                                                                type: "Photographer",
+                                                                  date: date,
+                                                                  fromId: FirebaseAuth
+                                                                      .instance
+                                                                      .currentUser!
+                                                                      .uid,
+                                                                  message:
+                                                                      "Accepetd your booking",
+                                                                  time: time,
+                                                                  toId: ds[
+                                                                      "uid"]));
+                                                    });
+                                                  },
+                                                  style: ElevatedButton.styleFrom(
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                          vertical: 12,
+                                                          horizontal: 40),
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10)),
+                                                      foregroundColor:
+                                                          Colors.black,
+                                                      backgroundColor:
+                                                          Colors.white),
+                                                  child: const Text(
+                                                    "Accept",
+                                                    style: TextStyle(
+                                                        color: Colors.black),
+                                                  ),
+                                                ),
+                                                ElevatedButton(
+                                                  onPressed: () async {
+                                                    PhotographerController()
+                                                        .updateEventStatus(
+                                                            "Rejected",
+                                                            ds["bookingId"])
+                                                        .then((value) {
+                                                      PhotographerController()
+                                                          .sendNotificationtouser(
+                                                              NotificationModel(
+                                                                                                                                type: "Photographer",
+
+                                                                  date: date,
+                                                                  fromId: FirebaseAuth
+                                                                      .instance
+                                                                      .currentUser!
+                                                                      .uid,
+                                                                  message:
+                                                                      "Rejected your booking",
+                                                                  time: time,
+                                                                  toId: ds[
+                                                                      "uid"]));
+                                                    });
+                                                  },
+                                                  style: ElevatedButton.styleFrom(
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                          vertical: 12,
+                                                          horizontal: 40),
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10)),
+                                                      foregroundColor:
+                                                          Colors.black,
+                                                      backgroundColor:
+                                                          Colors.white),
+                                                  child: const Text(
+                                                    "Reject",
+                                                    style: TextStyle(
+                                                        color: Colors.black),
+                                                  ),
+                                                )
+                                              ],
+                                            )
+                                          : Text(
+                                              ds["status"],
+                                              style: TextStyle(
+                                                  color: colorPicker(
+                                                      ds["status"])),
+                                            )
                                     ],
-                                  )
-                                ],
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  ElevatedButton(
-                                    onPressed: () {},
-                                    style: ElevatedButton.styleFrom(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 12, horizontal: 40),
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                        foregroundColor: Colors.black,
-                                        backgroundColor: Colors.white),
-                                    child: const Text(
-                                      "Accept",
-                                      style: TextStyle(color: Colors.black),
-                                    ),
-                                  ),
-                                  ElevatedButton(
-                                    onPressed: () async {
-                                      await DataBaseMethods()
-                                          .rejectBooking(ds["id"]);
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 12, horizontal: 40),
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                        foregroundColor: Colors.black,
-                                        backgroundColor: Colors.white),
-                                    child: const Text(
-                                      "Reject",
-                                      style: TextStyle(color: Colors.black),
-                                    ),
-                                  )
-                                ],
-                              )
-                            ],
-                          ),
+                                  );
+                                });
+                          }),
                         );
                       })
               : Container();
@@ -151,12 +295,12 @@ class _PhotoActivityState extends State<PhotoActivity> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: Colors.black,
       ),
       body: Container(
         color: Colors.black,
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         child: Column(
           children: [
             const Row(

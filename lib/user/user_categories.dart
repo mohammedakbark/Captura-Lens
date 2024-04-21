@@ -207,7 +207,7 @@ class _UserCategoriesState extends State<UserCategories> {
                                                   context,
                                                   MaterialPageRoute(
                                                       builder: (context) =>
-                                                          const UserEventBooking()));
+                                                           UserEventBooking(photographerModel: data[index],)));
                                             },
                                             style: ElevatedButton.styleFrom(
                                                 padding:
