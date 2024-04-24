@@ -87,7 +87,6 @@ class _UserActivityState extends State<UserActivity> {
                                   return Container(
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 15, vertical: 5),
-                                    height: 200,
                                     decoration: BoxDecoration(
                                         color: Colors.black,
                                         border: Border.all(color: Colors.white),
@@ -205,30 +204,30 @@ class _UserActivityState extends State<UserActivity> {
                                                           SizedBox(
                                                             width: 20,
                                                           ),
-                                                          list[index].status ==
-                                                                  "Accepted"
-                                                              ? ElevatedButton(
-                                                                  onPressed:
-                                                                      () {},
-                                                                  style: ElevatedButton.styleFrom(
-                                                                      shape: RoundedRectangleBorder(
-                                                                          borderRadius: BorderRadius.circular(
-                                                                              10)),
-                                                                      foregroundColor:
-                                                                          Colors
-                                                                              .white,
-                                                                      backgroundColor:
-                                                                          Colors
-                                                                              .blue),
-                                                                  child:
-                                                                      const Text(
-                                                                    "Pay",
-                                                                    style: TextStyle(
-                                                                        color: Colors
-                                                                            .black),
-                                                                  ),
-                                                                )
-                                                              : const SizedBox()
+                                                          // list[index].status ==
+                                                          //         "Accepted"
+                                                          //     ? ElevatedButton(
+                                                          //         onPressed:
+                                                          //             () {},
+                                                          //         style: ElevatedButton.styleFrom(
+                                                          //             shape: RoundedRectangleBorder(
+                                                          //                 borderRadius: BorderRadius.circular(
+                                                          //                     10)),
+                                                          //             foregroundColor:
+                                                          //                 Colors
+                                                          //                     .white,
+                                                          //             backgroundColor:
+                                                          //                 Colors
+                                                          //                     .blue),
+                                                          //         child:
+                                                          //             const Text(
+                                                          //           "Pay",
+                                                          //           style: TextStyle(
+                                                          //               color: Colors
+                                                          //                   .black),
+                                                          //         ),
+                                                          //       )
+                                                          //     : const SizedBox()
                                                         ],
                                                       )
                                                     ],

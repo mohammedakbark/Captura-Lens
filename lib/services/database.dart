@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:captura_lens/model/add_event_model.dart';
+import 'package:captura_lens/model/add_competition_model.dart';
 import 'package:captura_lens/model/photographer_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';

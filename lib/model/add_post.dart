@@ -1,4 +1,3 @@
-import 'package:captura_lens/model/like_model.dart';
 
 class AddPost {
   String imageUrl;

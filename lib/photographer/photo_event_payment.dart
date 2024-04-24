@@ -1,3 +1,4 @@
+import 'package:captura_lens/model/register_competition_model.dart';
 import 'package:captura_lens/photographer/photo_home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +7,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 import '../constants.dart';
 
 class PhotoEventPayment extends StatefulWidget {
-  const PhotoEventPayment({super.key});
+  RegisterCompetitionModel registerCompetitionModel;
+  String regId;
+  PhotoEventPayment(
+      {super.key, required this.registerCompetitionModel, required this.regId});
 
   @override
   State<PhotoEventPayment> createState() => _PhotoEventPaymentState();
@@ -33,9 +37,18 @@ class _PhotoEventPaymentState extends State<PhotoEventPayment> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: 30,),
-                        Text('Payment', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
-                        Text('Make an advance payment', style: TextStyle(color: Colors.white),)
+                        SizedBox(
+                          height: 30,
+                        ),
+                        Text(
+                          'Payment',
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          'Make an advance payment',
+                          style: TextStyle(color: Colors.white),
+                        )
                       ],
                     ),
                   ],
@@ -69,10 +82,15 @@ class _PhotoEventPaymentState extends State<PhotoEventPayment> {
                         border: OutlineInputBorder()),
                   ),
                   const SizedBox(height: 20.0),
-              TextField(
+                  TextField(
                     decoration: InputDecoration(
                         hintText: 'IFSC code',
-                        suffix: TextButton(onPressed: (){}, child: const Text("Search for IFSC", style: TextStyle(color: Colors.blue),)),
+                        suffix: TextButton(
+                            onPressed: () {},
+                            child: const Text(
+                              "Search for IFSC",
+                              style: TextStyle(color: Colors.blue),
+                            )),
                         border: OutlineInputBorder()),
                   ),
                   const SizedBox(
@@ -110,11 +128,12 @@ class _PhotoEventPaymentState extends State<PhotoEventPayment> {
                             MaterialPageRoute(
                                 builder: (context) => const PhotoHome()));
                       },
-                      child: const Text('Register',
-                          style: TextStyle(color: Colors.white),
-                        ),
+                      child: const Text(
+                        'Register',
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
+                  ),
                   const SizedBox(height: 20.0),
                 ],
               ),

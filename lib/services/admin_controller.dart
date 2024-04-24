@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:captura_lens/model/add_event_model.dart';
+import 'package:captura_lens/model/add_competition_model.dart';
 import 'package:captura_lens/model/notification_model.dart';
 import 'package:captura_lens/model/user_model.dart';
 import 'package:captura_lens/utils/const.dart';
@@ -83,5 +83,42 @@ class AdminController with ChangeNotifier {
 
   Future deleteUser(uid) async {
     db.collection("User").doc(uid).delete();
+  }
+
+  //=====================
+  List<AddCompetitionModel> competitonList = [];
+  fetchAllCompetitionForSearch() async {
+    final snapshot = await db.collection("Competition").get();
+    print(snapshot.docs.length);
+    competitonList = snapshot.docs.map((e) {
+      print(e["title"]);
+      print(e["deadline"]);
+      print(e["eventUploadedDate"]);
+
+      print(e["id"]);
+
+      print(e["imageURL"]);
+
+      print(e["payment"]);
+      print(e["place"]);
+      print(e["prizeAndDescription"]);
+      print(e["registrationfee"]);
+
+      return AddCompetitionModel.fromJson(e.data());
+    }).toList();
+  }
+
+  List<AddCompetitionModel> searchResult = [];
+
+  searchCompetition(
+    String searchKey,
+  ) {
+    print(searchKey);
+    searchResult = List.from(competitonList);
+    searchResult = competitonList
+        .where((element) =>
+            element.title.toLowerCase().contains(searchKey.toLowerCase()))
+        .toList();
+    notifyListeners();
   }
 }

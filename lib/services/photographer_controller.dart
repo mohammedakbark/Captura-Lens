@@ -1,6 +1,7 @@
 import 'package:captura_lens/model/add_post.dart';
 import 'package:captura_lens/model/notification_model.dart';
 import 'package:captura_lens/model/photographer_model.dart';
+import 'package:captura_lens/model/register_competition_model.dart';
 import 'package:captura_lens/model/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -83,8 +84,6 @@ class PhotographerController with ChangeNotifier {
     }
   }
 
- 
-
   Future updateEventStatus(newStatus, docId) async {
     await db
         .collection("Booking Events")
@@ -95,5 +94,10 @@ class PhotographerController with ChangeNotifier {
   sendNotificationtouser(NotificationModel notificationModel) {
     final doc = db.collection("Notifications").doc();
     doc.set(notificationModel.toJson(doc.id));
+  }
+
+  Future registerCompetition(
+      id, RegisterCompetitionModel registerCompetitionModel) async {
+    db.collection("Registerd Competition").doc(id).set(registerCompetitionModel.toJson(id));
   }
 }

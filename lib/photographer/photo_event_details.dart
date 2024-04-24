@@ -93,7 +93,7 @@ class _PhotoEventDetailsState extends State<PhotoEventDetails> {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                const PhotoEventRegistration()));
+                                 PhotoEventRegistration(competitionId:widget.ds["id"] ,payemtMode: widget.ds["payment"],)));
                   },
                   style: TextButton.styleFrom(
                       backgroundColor: CustomColors.buttonGrey),

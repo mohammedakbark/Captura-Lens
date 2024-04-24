@@ -3,7 +3,7 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:captura_lens/constants.dart';
-import 'package:captura_lens/model/add_event_model.dart';
+import 'package:captura_lens/model/add_competition_model.dart';
 import 'package:captura_lens/services/admin_controller.dart';
 import 'package:captura_lens/services/database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -28,6 +28,7 @@ class _AdminEventPostState extends State<AdminEventPost> {
   TextEditingController dateController = TextEditingController();
   TextEditingController prizeController = TextEditingController();
   TextEditingController placeController = TextEditingController();
+  TextEditingController feeController = TextEditingController();
 
   DateTime? _selectedDate;
 
@@ -260,6 +261,24 @@ class _AdminEventPostState extends State<AdminEventPost> {
                         groupedvalue = value;
                       });
                     }),
+                groupedvalue == "Paid"
+                    ? TextFormField(
+                        textCapitalization: TextCapitalization.sentences,
+                        controller: feeController,
+                        keyboardType: TextInputType.number,
+                        validator: (place) {
+                          if (place == null || place.isEmpty) {
+                            return 'enter the prize';
+                          }
+                        },
+                        decoration: const InputDecoration(
+                          hintText: 'Registration Fee',
+                          border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10))),
+                        ),
+                      )
+                    : SizedBox(),
                 RadioListTile(
                     fillColor: const MaterialStatePropertyAll(Colors.green),
                     title: const Text(
@@ -271,6 +290,7 @@ class _AdminEventPostState extends State<AdminEventPost> {
                     onChanged: (value) {
                       setState(() {
                         groupedvalue = value;
+                        feeController.clear();
                       });
                     }),
                 ElevatedButton(
@@ -293,6 +313,9 @@ class _AdminEventPostState extends State<AdminEventPost> {
                         await AdminController()
                             .addAdminCompetition(
                                 AddCompetitionModel(
+                                    registrationfee: groupedvalue == "Free"
+                                        ? 0
+                                        : double.parse(feeController.text),
                                     payment:
                                         groupedvalue == "Paid" ? true : false,
                                     deadline: dateController.text,
@@ -323,10 +346,13 @@ class _AdminEventPostState extends State<AdminEventPost> {
                           prizeController.clear();
                           placeController.clear();
                           groupedvalue = null;
+                          feeController.clear();
                         });
+                        // Navigator.of(context).pop();
                       } else {
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                            content: Text("Select the payment option")));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text("Select the payment option")));
                       }
                     }
                   },

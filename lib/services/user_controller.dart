@@ -1,9 +1,10 @@
+import 'dart:async';
 import 'dart:ffi';
 
 import 'package:captura_lens/model/add_post.dart';
 import 'package:captura_lens/model/booking_model.dart';
+import 'package:captura_lens/model/comment_model.dart';
 import 'package:captura_lens/model/complaint_model.dart';
-import 'package:captura_lens/model/like_model.dart';
 import 'package:captura_lens/model/like_post_model.dart';
 import 'package:captura_lens/model/notification_model.dart';
 import 'package:captura_lens/model/photographer_model.dart';
@@ -92,6 +93,17 @@ class UserController with ChangeNotifier {
     }
   }
 
+  UserModel? selectedUser;
+  Future fetchSelectedUserData(uid) async {
+    final snapShot = await db
+        .collection("User")
+        .doc(uid)
+        .get();
+    if (snapShot.exists) {
+      selectedUser = UserModel.fromJson(snapShot.data()!);
+    }
+  }
+
   Future bookNewEventbyUSer(BookingModel bookingModel) async {
     final doc = db.collection("Booking Events").doc();
     doc.set(bookingModel.toJson(doc.id));
@@ -109,6 +121,7 @@ class UserController with ChangeNotifier {
     allPost = snapshot.docs.map((e) {
       return AddPost.fromJson(e.data());
     }).toList();
+    // notifyListeners();
   }
 
   PhotographerModel? selectedpGData;
@@ -117,6 +130,7 @@ class UserController with ChangeNotifier {
       final snapshot = await db.collection("Photographers").doc(uid).get();
       if (snapshot.exists) {
         selectedpGData = PhotographerModel.fromJson(snapshot.data()!);
+
         return selectedpGData;
       }
       return null;
@@ -170,28 +184,56 @@ class UserController with ChangeNotifier {
   }
 
   //--------LIKE /COMMENT/ SAVE
-
-  likePost(LikePostModel likeModelPost, id) async {
-    final docs = db
-        .collection("LikedPosts")
-        .doc(likeModelPost.likedUid + likeModelPost.postId);
-
-    docs.set(likeModelPost.toJson(docs.id));
-    fetchLikedpost(id);
-    notifyListeners();
-  }
-
-  disLikePost(id) {
-    db.collection("LikedPosts").doc(id).delete();
-    notifyListeners();
-  }
-
-  Future<bool> fetchLikedpost(id) async {
-    final snapShot = await db.collection("LikedPosts").doc(id).get();
-    if (snapShot.exists) {
-      return true;
+  DocumentSnapshot<Map<String, dynamic>>? SNAPSHOT;
+  Future likePost(LikePostModel likeModelPost, id) async {
+    final SNAPSHOT = await db.collection("LikedPosts").doc(id).get();
+    if (SNAPSHOT.exists) {
+      await _disLikePost(id);
     } else {
-      return false;
+      final docs = db
+          .collection("LikedPosts")
+          .doc(likeModelPost.likedUid + likeModelPost.postId);
+
+      await docs.set(likeModelPost.toJson(docs.id));
     }
+    notifyListeners();
+    // fetchLikedpost(id);
+    // notifyListeners();
+    // notifyListeners();
+  }
+
+  _disLikePost(id) async {
+    await db.collection("LikedPosts").doc(id).delete();
+  }
+
+  bool? isLiked;
+  Future<bool> fetchLikedpost(id) async {
+    // final streamShot = db.collection("LikedPosts").doc(id).snapshots();
+    final SNAPSHOT = await db.collection("LikedPosts").doc(id).get();
+    if (SNAPSHOT.exists) {
+      isLiked = true;
+      print(isLiked);
+      return isLiked!;
+    } else {
+      isLiked = false;
+      print(isLiked);
+      return isLiked!;
+    }
+  }
+
+  //-----------comment
+  Future addComment(postId, CommentModel commentModel) async {
+    final doc = db.collection("Posts").doc(postId).collection("comments").doc();
+    await doc.set(commentModel.toJson(doc.id));
+    notifyListeners();
+  }
+
+  List<CommentModel> comments = [];
+  Future fetchAllComment(postId) async {
+    final snapshot =
+        await db.collection("Posts").doc(postId).collection("comments").get();
+    comments = snapshot.docs.map((e) {
+      return CommentModel.fromJson(e.data());
+    }).toList();
   }
 }
