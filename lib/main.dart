@@ -2,12 +2,14 @@ import 'package:captura_lens/admin/admin_login.dart';
 import 'package:captura_lens/photographer/photo_login_signup.dart';
 import 'package:captura_lens/launching_page.dart';
 import 'package:captura_lens/services/admin_controller.dart';
+import 'package:captura_lens/services/payment_controller.dart';
 import 'package:captura_lens/services/photographer_controller.dart';
 import 'package:captura_lens/services/user_controller.dart';
 import 'package:captura_lens/splash_screen.dart';
 import 'package:captura_lens/to_do_admin_home.dart';
 import 'package:captura_lens/try_to_do.dart';
 import 'package:captura_lens/user/user_login_signup.dart';
+import 'package:captura_lens/utils/test.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -34,8 +36,8 @@ class MyApp extends StatelessWidget {
             create: (_) => PhotographerController()),
         ChangeNotifierProvider<AdminController>(
             create: (_) => AdminController()),
-             ChangeNotifierProvider<UserController>(
-            create: (_) => UserController())
+        ChangeNotifierProvider<UserController>(create: (_) => UserController()),
+         ChangeNotifierProvider<PaymentController>(create: (_) => PaymentController())
       ],
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,

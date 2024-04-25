@@ -5,12 +5,12 @@ import 'dart:typed_data';
 import 'package:captura_lens/constants.dart';
 import 'package:captura_lens/model/add_competition_model.dart';
 import 'package:captura_lens/services/admin_controller.dart';
-import 'package:captura_lens/services/database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:random_string/random_string.dart';
@@ -29,6 +29,7 @@ class _AdminEventPostState extends State<AdminEventPost> {
   TextEditingController prizeController = TextEditingController();
   TextEditingController placeController = TextEditingController();
   TextEditingController feeController = TextEditingController();
+  TextEditingController upiController = TextEditingController();
 
   DateTime? _selectedDate;
 
@@ -113,7 +114,6 @@ class _AdminEventPostState extends State<AdminEventPost> {
 
   String uniqueImageName = DateTime.now().microsecondsSinceEpoch.toString();
 
-  DataBaseMethods methods = DataBaseMethods();
   String? groupedvalue;
   @override
   Widget build(BuildContext context) {
@@ -262,21 +262,44 @@ class _AdminEventPostState extends State<AdminEventPost> {
                       });
                     }),
                 groupedvalue == "Paid"
-                    ? TextFormField(
-                        textCapitalization: TextCapitalization.sentences,
-                        controller: feeController,
-                        keyboardType: TextInputType.number,
-                        validator: (place) {
-                          if (place == null || place.isEmpty) {
-                            return 'enter the prize';
-                          }
-                        },
-                        decoration: const InputDecoration(
-                          hintText: 'Registration Fee',
-                          border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10))),
-                        ),
+                    ? Column(
+                        children: [
+                          TextFormField(
+                            textCapitalization: TextCapitalization.sentences,
+                            controller: feeController,
+                            keyboardType: TextInputType.number,
+                            validator: (place) {
+                              if (place == null || place.isEmpty) {
+                                return 'enter the prize';
+                              }
+                            },
+                            decoration: const InputDecoration(
+                              hintText: 'Registration Fee',
+                              border: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10))),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          TextFormField(
+                            textCapitalization: TextCapitalization.sentences,
+                            controller: upiController,
+                            // keyboardType: TextInputType.number,
+                            validator: (place) {
+                              if (place == null || place.isEmpty) {
+                                return 'enter the prize';
+                              }
+                            },
+                            decoration: const InputDecoration(
+                              hintText: 'Upi id',
+                              border: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10))),
+                            ),
+                          ),
+                        ],
                       )
                     : SizedBox(),
                 RadioListTile(
@@ -291,6 +314,7 @@ class _AdminEventPostState extends State<AdminEventPost> {
                       setState(() {
                         groupedvalue = value;
                         feeController.clear();
+                        upiController.clear();
                       });
                     }),
                 ElevatedButton(
@@ -313,6 +337,9 @@ class _AdminEventPostState extends State<AdminEventPost> {
                         await AdminController()
                             .addAdminCompetition(
                                 AddCompetitionModel(
+                                    upiId: groupedvalue == "Free"
+                                        ? ""
+                                        : upiController.text,
                                     registrationfee: groupedvalue == "Free"
                                         ? 0
                                         : double.parse(feeController.text),
@@ -347,6 +374,7 @@ class _AdminEventPostState extends State<AdminEventPost> {
                           placeController.clear();
                           groupedvalue = null;
                           feeController.clear();
+                          upiController.clear();
                         });
                         // Navigator.of(context).pop();
                       } else {

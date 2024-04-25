@@ -1,3 +1,4 @@
+import 'package:captura_lens/model/add_competition_model.dart';
 import 'package:captura_lens/model/add_post.dart';
 import 'package:captura_lens/model/notification_model.dart';
 import 'package:captura_lens/model/photographer_model.dart';
@@ -99,5 +100,28 @@ class PhotographerController with ChangeNotifier {
   Future registerCompetition(
       id, RegisterCompetitionModel registerCompetitionModel) async {
     db.collection("Registerd Competition").doc(id).set(registerCompetitionModel.toJson(id));
+  }
+
+  //         searching
+   List<AddCompetitionModel> competitonList = [];
+  fetchAllCompetitionForSearch() async {
+    final snapshot = await db.collection("Competition").get();
+    competitonList = snapshot.docs.map((e) {
+      return AddCompetitionModel.fromJson(e.data());
+    }).toList();
+  }
+
+  List<AddCompetitionModel> searchResult = [];
+
+  searchCompetition(
+    String searchKey,
+  ) {
+    print(searchKey);
+    searchResult = List.from(competitonList);
+    searchResult = competitonList
+        .where((element) =>
+            element.title.toLowerCase().contains(searchKey.toLowerCase()))
+        .toList();
+    notifyListeners();
   }
 }

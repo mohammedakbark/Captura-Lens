@@ -14,7 +14,6 @@ import 'package:image_editor_plus/image_editor_plus.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:random_string/random_string.dart';
 
-import '../services/database.dart';
 
 class PhotoAddPost extends StatefulWidget {
   const PhotoAddPost({super.key});
@@ -57,7 +56,6 @@ class _PhotoAddPostState extends State<PhotoAddPost> {
 
   final firebaseStorage = FirebaseStorage.instance;
   String uniqueImageName = DateTime.now().microsecondsSinceEpoch.toString();
-  DataBaseMethods methods = DataBaseMethods();
 
   @override
   Widget build(BuildContext context) {

@@ -8,9 +8,27 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:video_player/video_player.dart';
 
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  late VideoPlayerController _controller;
+  @override
+  void initState() {
+    _controller = VideoPlayerController.asset("assets/captura_intro.mp4")
+      ..initialize().then((value) {
+        _controller.play();
+        _controller.setVolume(0);
+      });
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,8 +72,19 @@ class SplashScreen extends StatelessWidget {
       }
     });
 
-    return const Scaffold(
+    return Scaffold(
       backgroundColor: Colors.black,
+      body: Center(
+        child:
+            SizedBox(height: 200, width: 200, child: VideoPlayer(_controller)),
+      ),
     );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    // TODO: implement dispose
+    super.dispose();
   }
 }

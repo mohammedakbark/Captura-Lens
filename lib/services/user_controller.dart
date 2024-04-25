@@ -17,6 +17,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class UserController with ChangeNotifier {
+  // bool showDetails = false;
+
+  // show() {
+  //   showDetails = !showDetails;
+  //   notifyListeners();
+  // }
+
   int hours = 1;
 
   addHour() {
@@ -95,10 +102,7 @@ class UserController with ChangeNotifier {
 
   UserModel? selectedUser;
   Future fetchSelectedUserData(uid) async {
-    final snapShot = await db
-        .collection("User")
-        .doc(uid)
-        .get();
+    final snapShot = await db.collection("User").doc(uid).get();
     if (snapShot.exists) {
       selectedUser = UserModel.fromJson(snapShot.data()!);
     }
@@ -236,4 +240,22 @@ class UserController with ChangeNotifier {
       return CommentModel.fromJson(e.data());
     }).toList();
   }
+
+  //----serching
+  List<BookingModel> searchBooking = [];
+
+  serchBookingByEventName(String serchKey) {
+    searchBooking = List.from(mybookingList);
+    searchBooking = mybookingList
+        .where((element) =>
+            element.eventName.toLowerCase().contains(serchKey.toLowerCase()))
+        .toList();
+    notifyListeners();
+  }
+
+  // List<AddPost> searchPost = [];
+  // serchPostByUserName(String serchKey) {
+  //   searchPost = List.from(allPost);
+  //   searchPost=allPost.where((element) => element)
+  // }
 }

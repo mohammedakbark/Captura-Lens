@@ -89,21 +89,7 @@ class AdminController with ChangeNotifier {
   List<AddCompetitionModel> competitonList = [];
   fetchAllCompetitionForSearch() async {
     final snapshot = await db.collection("Competition").get();
-    print(snapshot.docs.length);
     competitonList = snapshot.docs.map((e) {
-      print(e["title"]);
-      print(e["deadline"]);
-      print(e["eventUploadedDate"]);
-
-      print(e["id"]);
-
-      print(e["imageURL"]);
-
-      print(e["payment"]);
-      print(e["place"]);
-      print(e["prizeAndDescription"]);
-      print(e["registrationfee"]);
-
       return AddCompetitionModel.fromJson(e.data());
     }).toList();
   }

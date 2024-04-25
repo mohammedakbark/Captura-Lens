@@ -6,6 +6,7 @@ import 'package:captura_lens/constants.dart';
 import 'package:captura_lens/services/user_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -17,11 +18,14 @@ class UserActivity extends StatefulWidget {
 }
 
 class _UserActivityState extends State<UserActivity> {
+  bool showDetails = false;
   @override
   Widget build(BuildContext context) {
+    final searchController = Provider.of<UserController>(context);
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
+        toolbarHeight: 20,
         backgroundColor: Colors.black,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
@@ -33,6 +37,12 @@ class _UserActivityState extends State<UserActivity> {
               children: [
                 Expanded(
                   child: TextFormField(
+                    onTap: () {
+                      searchController.fetchCurrentuserBookingEvents();
+                    },
+                    onChanged: (value) {
+                      searchController.serchBookingByEventName(value);
+                    },
                     decoration: InputDecoration(
                       suffixIcon: const Icon(
                         Icons.search,
@@ -46,14 +56,6 @@ class _UserActivityState extends State<UserActivity> {
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 8.0),
-                IconButton(
-                  icon: const Icon(
-                    Icons.menu,
-                    color: Colors.grey,
-                  ),
-                  onPressed: () {},
                 ),
               ],
             ),
@@ -73,15 +75,20 @@ class _UserActivityState extends State<UserActivity> {
                             ),
                           );
                         }
-                        final list = controller.mybookingList;
+                        final list = searchController.searchBooking.isEmpty
+                            ? controller.mybookingList
+                            : searchController.searchBooking;
                         return list.isEmpty
-                            ? Center(
+                            ? const Center(
                                 child: Text(
                                   "No activities",
                                   style: TextStyle(color: Colors.white),
                                 ),
                               )
-                            : ListView.builder(
+                            : ListView.separated(
+                                separatorBuilder: (context, index) => SizedBox(
+                                      height: 20,
+                                    ),
                                 itemCount: list.length,
                                 itemBuilder: (context, index) {
                                   return Container(
@@ -201,9 +208,10 @@ class _UserActivityState extends State<UserActivity> {
                                                                     list[index]
                                                                         .status)),
                                                           ),
-                                                          SizedBox(
+                                                          const SizedBox(
                                                             width: 20,
                                                           ),
+
                                                           // list[index].status ==
                                                           //         "Accepted"
                                                           //     ? ElevatedButton(
@@ -229,7 +237,85 @@ class _UserActivityState extends State<UserActivity> {
                                                           //       )
                                                           //     : const SizedBox()
                                                         ],
+                                                      ),
+                                                      Column(
+                                                        children: [
+                                                          SizedBox(
+                                                            width: 300,
+                                                            child: ListTile(
+                                                              onTap: () {
+                                                                setState(() {
+                                                                  showDetails =
+                                                                      !showDetails;
+                                                                });
+                                                              },
+                                                              title: const Text(
+                                                                "Event Details",
+                                                                style: TextStyle(
+                                                                    color: Color
+                                                                        .fromARGB(
+                                                                            255,
+                                                                            163,
+                                                                            163,
+                                                                            163)),
+                                                              ),
+                                                              trailing: Icon(showDetails
+                                                                  ? Icons
+                                                                      .arrow_drop_up_rounded
+                                                                  : Icons
+                                                                      .arrow_drop_down_rounded),
+                                                            ),
+                                                          ),
+                                                          showDetails
+                                                              ? Column(
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    Text(
+                                                                      "Event : ${list[index].eventName}",
+                                                                      style: const TextStyle(
+                                                                          color:
+                                                                              Colors.white),
+                                                                    ),
+                                                                    Text(
+                                                                      "Address : ${list[index].address}",
+                                                                      style: const TextStyle(
+                                                                          color:
+                                                                              Colors.white),
+                                                                    ),
+                                                                    Row(
+                                                                      children: [
+                                                                        Text(
+                                                                          "From : ${list[index].from}",
+                                                                          style:
+                                                                              const TextStyle(color: Colors.white),
+                                                                        ),
+                                                                        Text(
+                                                                          "  To : ${list[index].to}",
+                                                                          style:
+                                                                              const TextStyle(color: Colors.white),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                    Text(
+                                                                      "Duration : ${list[index].hours.toString()} hours",
+                                                                      style: const TextStyle(
+                                                                          color:
+                                                                              Colors.white),
+                                                                    ),
+                                                                  ],
+                                                                )
+                                                              : const SizedBox(),
+                                                        ],
                                                       )
+
+                                                      // Text(
+                                                      //   list[index].name,
+                                                      //   style: const TextStyle(
+                                                      //       color:
+                                                      //           Colors.white),
+                                                      // ),
                                                     ],
                                                   )
                                                 ],

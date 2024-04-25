@@ -26,49 +26,36 @@ class _UserHomeDetailsState extends State<UserHomeDetails>
 
   @override
   Widget build(BuildContext context) {
+    final searchController = Provider.of<UserController>(context);
+
     print("hello");
     return Padding(
       padding: const EdgeInsets.only(top: 30.0),
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                      suffixIcon: const Icon(
-                        Icons.search,
-                        color: CupertinoColors.black,
-                      ),
-                      filled: true,
-                      fillColor: Colors.white,
-                      hintText: "Search",
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8.0),
-                // IconButton(
-                //   icon: const Icon(
-                //     Icons.power_settings_new_rounded,
-                //     color: Color.fromARGB(255, 229, 43, 30),
-                //   ),
-                //   onPressed: () {
-                //     FirebaseAuth.instance.signOut().then((value) {
-                //       Navigator.of(context).pushAndRemoveUntil(
-                //           MaterialPageRoute(
-                //               builder: (context) => const SplashScreen()),
-                //           (route) => false);
-                //     });
-                //   },
-                // ),
-              ],
-            ),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.all(8.0),
+          //   child: TextFormField(
+          //     onTap: () {
+          //       searchController.fetchAllPost();
+          //     },
+          //     onChanged: (value) {
+
+          //     },
+          //     decoration: InputDecoration(
+          //       suffixIcon: const Icon(
+          //         Icons.search,
+          //         color: CupertinoColors.black,
+          //       ),
+          //       filled: true,
+          //       fillColor: Colors.white,
+          //       hintText: "Search",
+          //       border: OutlineInputBorder(
+          //         borderRadius: BorderRadius.circular(20.0),
+          //       ),
+          //     ),
+          //   ),
+          // ),
           const SizedBox(
             height: 10,
           ),

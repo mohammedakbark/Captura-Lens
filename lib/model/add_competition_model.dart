@@ -7,10 +7,12 @@ class AddCompetitionModel {
   String eventId;
   String eventUploadedDate;
   bool payment;
+  String upiId;
   double registrationfee;
 
   AddCompetitionModel(
       {required this.deadline,
+      required this.upiId,
       required this.registrationfee,
       required this.payment,
       required this.eventId,
@@ -21,6 +23,7 @@ class AddCompetitionModel {
       required this.title});
   Map<String, dynamic> toJson() => {
         "imageURL": imageURL,
+        "upiId":upiId,
         "registrationfee": registrationfee,
         "payment": payment,
         "title": title,
@@ -34,6 +37,7 @@ class AddCompetitionModel {
   factory AddCompetitionModel.fromJson(Map<String, dynamic> json) {
     return AddCompetitionModel(
         deadline: json["deadline"],
+        upiId:json["upiId"],
         registrationfee: json["registrationfee"],
         payment: json["payment"],
         eventId: json["id"],

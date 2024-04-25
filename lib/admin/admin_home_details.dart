@@ -1,5 +1,4 @@
 import 'package:captura_lens/services/admin_controller.dart';
-import 'package:captura_lens/services/database.dart';
 import 'package:captura_lens/splash_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';

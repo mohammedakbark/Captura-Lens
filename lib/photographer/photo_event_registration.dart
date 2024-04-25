@@ -11,9 +11,15 @@ import 'package:flutter/material.dart';
 
 class PhotoEventRegistration extends StatefulWidget {
   String competitionId;
+  double paybleAmount;
   bool payemtMode;
+  String upiId;
   PhotoEventRegistration(
-      {super.key, required this.competitionId, required this.payemtMode});
+      {super.key,
+      required this.competitionId,
+      required this.upiId,
+      required this.payemtMode,
+      required this.paybleAmount});
 
   @override
   State<PhotoEventRegistration> createState() => _PhotoEventRegistrationState();
@@ -169,6 +175,8 @@ class _PhotoEventRegistrationState extends State<PhotoEventRegistration> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => PhotoEventPayment(
+                                    amount: widget.paybleAmount,
+                                    upiId: widget.upiId,
                                     registerCompetitionModel:
                                         RegisterCompetitionModel(
                                             competitionId: widget.competitionId,

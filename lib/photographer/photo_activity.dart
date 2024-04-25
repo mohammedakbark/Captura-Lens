@@ -1,5 +1,4 @@
 import 'package:captura_lens/model/notification_model.dart';
-import 'package:captura_lens/services/database.dart';
 import 'package:captura_lens/services/photographer_controller.dart';
 import 'package:captura_lens/user/user_activity.dart';
 import 'package:captura_lens/utils/const.dart';

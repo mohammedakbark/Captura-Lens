@@ -16,7 +16,6 @@ import 'package:provider/provider.dart';
 
 import '../user/complaints_page.dart';
 import '../help_page.dart';
-import '../services/database.dart';
 import '../support_page.dart';
 
 class PhotoProfile extends StatefulWidget {

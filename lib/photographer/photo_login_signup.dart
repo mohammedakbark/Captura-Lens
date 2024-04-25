@@ -3,7 +3,6 @@ import 'package:captura_lens/forgot_password.dart';
 import 'package:captura_lens/model/photographer_model.dart';
 import 'package:captura_lens/photographer/photo_home.dart';
 import 'package:captura_lens/photographer/photo_send_otp.dart';
-import 'package:captura_lens/services/database.dart';
 import 'package:captura_lens/services/photographer_controller.dart';
 import 'package:captura_lens/utils/const.dart';
 import 'package:firebase_auth/firebase_auth.dart';

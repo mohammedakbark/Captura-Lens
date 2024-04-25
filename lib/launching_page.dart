@@ -3,6 +3,7 @@ import 'package:captura_lens/photographer/photo_login_signup.dart';
 import 'package:captura_lens/user/user_login_signup.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'constants.dart';
 
@@ -17,63 +18,73 @@ class _LaunchingPageState extends State<LaunchingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: CupertinoColors.black,
-        child: Row(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        actions: [
+          TextButton(
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 40),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+              foregroundColor: Color.fromARGB(255, 69, 68, 68),
+            ),
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const AdminLogin()));
+            },
+            child: const Text(
+              'Admin',
+              style: TextStyle(fontSize: 18),
+            ),
+          ),
+          Icon(Icons.security),
+          SizedBox(
+            width: 20,
+          )
+        ],
+      ),
+      body: Center(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                TextButton(
-                  style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 12, horizontal: 40),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      foregroundColor: Colors.white,
-                      backgroundColor: CustomColors.buttonGreen),
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const PhotoLoginSignUp()));
-                  },
-                  child: const Text('Photographer'),
+            SizedBox(
+              height: 50,
+              width: MediaQuery.of(context).size.width * .4,
+              child: OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    shape: const RoundedRectangleBorder(
+                        side: BorderSide(color: Colors.white))),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const PhotoLoginSignUp()));
+                },
+                child: const Text('Photographer Login'),
+              ),
+            ),
+            SizedBox(
+              height: 50,
+            ),
+            SizedBox(
+              height: 50,
+              width: MediaQuery.of(context).size.width * .4,
+              child: OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  shape: const RoundedRectangleBorder(
+                      side: BorderSide(color: Colors.white)),
+                  foregroundColor: Colors.white,
                 ),
-                TextButton(
-                  style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 12, horizontal: 40),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      foregroundColor: Colors.white,
-                      backgroundColor: CustomColors.buttonGreen),
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const UserLoginSignUp()));
-                  },
-                  child: const Text('User'),
-                ),
-                TextButton(
-                  style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 12, horizontal: 40),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      foregroundColor: Colors.white,
-                      backgroundColor: CustomColors.buttonGreen),
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const AdminLogin()));
-                  },
-                  child: const Text('Admin'),
-                )
-              ],
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const UserLoginSignUp()));
+                },
+                child: const Text('User Login'),
+              ),
             ),
           ],
         ),

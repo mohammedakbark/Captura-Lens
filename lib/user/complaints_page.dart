@@ -1,7 +1,6 @@
 import 'package:captura_lens/model/complaint_model.dart';
 import 'package:captura_lens/model/notification_model.dart';
 import 'package:captura_lens/photographer/photo_profile.dart';
-import 'package:captura_lens/services/database.dart';
 import 'package:captura_lens/services/user_controller.dart';
 import 'package:captura_lens/utils/const.dart';
 import 'package:firebase_auth/firebase_auth.dart';
